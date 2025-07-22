@@ -1,0 +1,2628 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cotizador Industrial - Catálogo de Componentes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c5aa0 0%, #1a365d 100%);
+            color: white;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo h1 {
+            font-size: 1.8em;
+            font-weight: 700;
+        }
+
+        .search-main {
+            flex: 1;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .search-main input {
+            width: 100%;
+            padding: 12px 20px 12px 50px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 18px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .filters-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .filter-select {
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #2c5aa0;
+            box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+        }
+
+        /* Estilos para el slider de rango de precio */
+        .price-range-container {
+            padding: 20px 0;
+        }
+
+        .price-range-slider {
+            position: relative;
+            width: 100%;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            margin: 20px 0;
+        }
+
+        .price-range-track {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            border-radius: 3px;
+            background: #e9ecef;
+        }
+
+        .price-range-fill {
+            position: absolute;
+            top: 0;
+            height: 6px;
+            background: linear-gradient(135deg, #2c5aa0 0%, #1a365d 100%);
+            border-radius: 3px;
+            pointer-events: none;
+        }
+
+        .price-range-handle {
+            position: absolute;
+            top: 50%;
+            width: 20px;
+            height: 20px;
+            background: #2c5aa0;
+            border: 3px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+            z-index: 2;
+        }
+
+        .price-range-handle:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .price-range-handle:active {
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
+        .price-range-labels {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .price-range-value {
+            background: #2c5aa0;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .price-range-inputs {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .price-range-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .price-range-input:focus {
+            outline: none;
+            border-color: #2c5aa0;
+            box-shadow: 0 0 0 2px rgba(44, 90, 160, 0.1);
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2c5aa0 0%, #1a365d 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 90, 160, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid #e9ecef;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        .stats-bar {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            text-align: center;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2c5aa0;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .results-count {
+            font-size: 1.1em;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-btn {
+            padding: 8px 16px;
+            border: 2px solid #e9ecef;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn.active {
+            background: #2c5aa0;
+            color: white;
+            border-color: #2c5aa0;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border-color: #2c5aa0;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            line-height: 1.4;
+            height: 3.2em;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .product-brand {
+            font-size: 0.9em;
+            color: #2c5aa0;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .product-specs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .spec-tag {
+            background: #e9ecef;
+            color: #495057;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+
+        .product-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .price-main {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .price-high {
+            color: #dc3545;
+        }
+
+        .product-supplier {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.9em;
+            border-radius: 20px;
+            flex: 1;
+        }
+
+        /* Estilos específicos para diseño estilo SoloTodo */
+        .product-card.solotodo-style {
+            border: 1px solid #e1e5e9;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .product-card.solotodo-style:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            border-color: #2c5aa0;
+        }
+
+        .product-card.solotodo-style .product-image {
+            height: 180px;
+            background: #fafafa;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+        }
+
+        .product-card.solotodo-style .product-image img {
+            max-width: 90%;
+            max-height: 90%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            object-position: center;
+        }
+
+        .pdf-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .product-card.solotodo-style .product-info {
+            padding: 16px;
+        }
+
+        .product-card.solotodo-style .product-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 12px;
+            line-height: 1.3;
+            height: auto;
+            min-height: 36px;
+            max-height: none;
+            overflow: visible;
+            display: block;
+            -webkit-line-clamp: unset;
+            -webkit-box-orient: unset;
+        }
+
+        .product-card.solotodo-style .product-price {
+            margin-bottom: 16px;
+            justify-content: flex-start;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .product-card.solotodo-style .price-main {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2c5aa0;
+        }
+
+        .price-quantity {
+            font-size: 14px;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .product-details {
+            margin-bottom: 16px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 6px;
+            font-size: 13px;
+            line-height: 1.3;
+        }
+
+        .detail-label {
+            color: #666;
+            font-weight: 500;
+            min-width: 45%;
+            margin-right: 8px;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 400;
+            text-align: right;
+            flex: 1;
+            word-break: break-word;
+        }
+
+        .product-card.solotodo-style .product-supplier {
+            margin-bottom: 16px;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 12px;
+        }
+
+        .supplier-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .supplier-logo {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            object-fit: cover;
+            border: 1px solid #e1e5e9;
+        }
+
+        .supplier-name {
+            font-size: 13px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .product-card.solotodo-style .product-actions {
+            margin-top: auto;
+        }
+
+        .product-card.solotodo-style .btn-small {
+            background: #2c5aa0;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            width: 100%;
+        }
+
+        .product-card.solotodo-style .btn-small:hover {
+            background: #1a4480;
+        }
+
+        /* Estilos específicos para diseño estilo SoloTodo */
+        .product-card.solotodo-style {
+            border: 1px solid #e1e5e9;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .product-card.solotodo-style:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            border-color: #2c5aa0;
+        }
+
+        .product-card.solotodo-style .product-image {
+            height: 180px;
+            background: #fafafa;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+        }
+
+        .product-card.solotodo-style .product-image img {
+            max-width: 90%;
+            max-height: 90%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            object-position: center;
+        }
+
+        .pdf-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .product-card.solotodo-style .product-info {
+            padding: 16px;
+        }
+
+        .product-card.solotodo-style .product-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 12px;
+            line-height: 1.3;
+            height: auto;
+            min-height: 36px;
+            max-height: none;
+            overflow: visible;
+            display: block;
+            -webkit-line-clamp: unset;
+            -webkit-box-orient: unset;
+        }
+
+        .product-card.solotodo-style .product-price {
+            margin-bottom: 16px;
+            justify-content: flex-start;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .product-card.solotodo-style .price-main {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2c5aa0;
+        }
+
+        .price-quantity {
+            font-size: 14px;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .product-details {
+            margin-bottom: 16px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 6px;
+            font-size: 13px;
+            line-height: 1.3;
+        }
+
+        .detail-label {
+            color: #666;
+            font-weight: 500;
+            min-width: 45%;
+            margin-right: 8px;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 400;
+            text-align: right;
+            flex: 1;
+            word-break: break-word;
+        }
+
+        .product-card.solotodo-style .product-supplier {
+            margin-bottom: 16px;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 12px;
+        }
+
+        .supplier-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .supplier-logo {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            object-fit: cover;
+            border: 1px solid #e1e5e9;
+        }
+
+        .supplier-name {
+            font-size: 13px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .product-card.solotodo-style .product-actions {
+            margin-top: auto;
+        }
+
+        .product-card.solotodo-style .btn-small {
+            background: #2c5aa0;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            width: 100%;
+        }
+
+        .product-card.solotodo-style .btn-small:hover {
+            background: #1a4480;
+        }
+
+        /* Estilos para filtro avanzado de proveedor */
+        .advanced-filter-container {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            overflow: hidden;
+            position: absolute;
+            z-index: 20;
+            min-width: 240px;
+            box-shadow: 0 4px 16px rgba(44,90,160,0.10);
+            display: none;
+        }
+
+        .filter-search-container {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            padding: 8px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .filter-search-container {
+                flex-direction: column;
+                gap: 6px;
+            }
+            
+            .select-all-btn, .deselect-all-btn {
+                font-size: 11px;
+                padding: 6px 10px;
+            }
+        }
+
+        .filter-search {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .filter-search:focus {
+            border-color: #2c5aa0;
+            box-shadow: 0 0 0 2px rgba(44, 90, 160, 0.1);
+        }
+
+        .select-all-btn {
+            padding: 8px 12px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background-color 0.2s;
+        }
+
+        .select-all-btn:hover {
+            background: #218838;
+        }
+
+        .select-all-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .deselect-all-btn {
+            padding: 8px 12px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background-color 0.2s;
+        }
+
+        .deselect-all-btn:hover {
+            background: #c82333;
+        }
+
+        .deselect-all-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .checkbox-container {
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 8px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .checkbox-item:hover {
+            background: #f8f9fa;
+        }
+
+        .checkbox-item.hidden {
+            display: none;
+        }
+
+        .checkbox-left {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            gap: 8px;
+        }
+
+        .checkbox-input {
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .checkbox-label {
+            font-size: 14px;
+            color: #333;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .provider-count {
+            background: #2c5aa0;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .provider-count.zero {
+            background: #6c757d;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .page-btn {
+            padding: 10px 15px;
+            border: 2px solid #e9ecef;
+            background: white;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .page-btn:hover, .page-btn.active {
+            background: #2c5aa0;
+            color: white;
+            border-color: #2c5aa0;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 95%;
+            max-width: 1200px;
+            max-height: 95vh;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #2c5aa0 0%, #1a365d 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .close {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .close:hover {
+            opacity: 0.7;
+        }
+
+        .modal-body {
+            padding: 30px;
+            max-height: 75vh;
+            overflow-y: auto;
+        }
+
+        .pdf-section {
+            margin-top: 30px;
+            border-top: 2px solid #e9ecef;
+            padding-top: 20px;
+        }
+
+        .pdf-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .pdf-viewer {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            display: none;
+            background: #f8f9fa;
+        }
+
+        .pdf-viewer iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .pdf-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .btn-pdf {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .btn-pdf-view {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        .btn-pdf-view:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-pdf-open {
+            background: linear-gradient(135deg, #fd7e14 0%, #e63946 100%);
+            color: white;
+        }
+
+        .btn-pdf-open:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(253, 126, 20, 0.3);
+        }
+
+        .btn-pdf-hide {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-pdf-hide:hover {
+            background: #5a6268;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .detail-value {
+            color: #333;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 100px 20px;
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 100px 20px;
+            color: #999;
+            font-size: 1.1em;
+        }
+
+        .file-upload {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 2px dashed #2c5aa0;
+        }
+
+        .file-upload input {
+            margin: 15px 0;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .search-main {
+                max-width: 100%;
+                order: -1;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 15px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .results-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .highlight {
+            background-color: #ffeb3b;
+            font-weight: bold;
+            padding: 1px 2px;
+            border-radius: 2px;
+        }
+
+        .table-view {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .table th {
+            background: linear-gradient(135deg, #2c5aa0 0%, #1a365d 100%);
+            color: white;
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .table th:hover {
+            background: rgba(44, 90, 160, 0.8);
+        }
+
+        .table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: top;
+        }
+
+        .table tr:hover {
+            background: rgba(44, 90, 160, 0.05);
+        }
+
+        .table tr:nth-child(even) {
+            background: rgba(248, 249, 250, 0.5);
+        }
+
+        .sort-arrow {
+            margin-left: 5px;
+            opacity: 0.6;
+        }
+
+        .proveedor-dropdown-btn {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s;
+        }
+        .proveedor-dropdown-btn:focus, .proveedor-dropdown-btn.active {
+            outline: none;
+            border-color: #2c5aa0;
+            box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+        }
+        .proveedor-dropdown-arrow {
+            margin-left: 10px;
+            font-size: 1.1em;
+            color: #888;
+            transition: transform 0.2s;
+        }
+        .filter-group.open .proveedor-dropdown-arrow {
+            transform: rotate(180deg);
+        }
+        .proveedor-dropdown-btn .selected-count {
+            background: #2c5aa0;
+            color: white;
+            border-radius: 12px;
+            padding: 2px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+    </style>
+    <!-- Agregar noUiSlider CSS en <head> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span style="font-size: 2em;">🔧</span>
+                <h1>Cotizador Industrial</h1>
+            </div>
+            <div class="search-main">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="mainSearch" placeholder="Buscar componentes, marcas, proveedores..." />
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-secondary" onclick="loadFileInput()">📁 Cargar CSV</button>
+                <button class="btn btn-primary" onclick="loadDefaultData()">📊 Cargar Datos</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="csvManualMsg" style="display:none; background:#fff3cd; color:#856404; border:1px solid #ffeeba; border-radius:8px; padding:16px; margin-bottom:20px; font-size:1.1em;">
+            <b>⚠️ Por favor, cargue el archivo CSV manualmente usando el botón "Cargar CSV".</b>
+        </div>
+        <div class="file-upload" id="fileUpload" style="display: none;">
+            <h3>📁 Cargar archivo CSV de cotizaciones</h3>
+            <input type="file" id="csvFile" accept=".csv" />
+            <p>Selecciona tu archivo CSV con las cotizaciones para analizarlo</p>
+        </div>
+
+        <div class="filters-section">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label" for="proveedorFilter">Proveedor</label>
+                    <select id="proveedorFilter" class="filter-select">
+                        <option value="">Todos los proveedores</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label" for="marcaFilter">Marca</label>
+                    <select id="marcaFilter" class="filter-select">
+                        <option value="">Todas las marcas</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label" for="tipoFilter">Tipo de Componente</label>
+                    <select id="tipoFilter" class="filter-select">
+                        <option value="">Todos los tipos</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label" for="modeloFilter">Modelo</label>
+                    <select id="modeloFilter" class="filter-select">
+                        <option value="">Todos los modelos</option>
+                    </select>
+                </div>
+            </div>
+            <!-- Rango de precio y acciones -->
+            <div class="price-range-container">
+                <div id="priceRangeSlider" style="margin: 20px 0;"></div>
+                <div class="price-range-labels">
+                    <span>Mínimo: <span class="price-range-value" id="priceRangeMinValue">$0</span></span>
+                    <span>Máximo: <span class="price-range-value" id="priceRangeMaxValue">$0</span></span>
+                </div>
+                <div class="price-range-inputs">
+                    <input type="number" class="price-range-input" id="priceRangeMinInput" placeholder="Mínimo" min="0">
+                    <input type="number" class="price-range-input" id="priceRangeMaxInput" placeholder="Máximo" min="0">
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button class="btn btn-primary" onclick="applyFilters()">Aplicar Filtros</button>
+                <button class="btn btn-secondary" onclick="clearFilters()">Limpiar Filtros</button>
+            </div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalItems">0</div>
+                    <div class="stat-label">Componentes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalProviders">0</div>
+                    <div class="stat-label">Proveedores</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="avgPrice">$0</div>
+                    <div class="stat-label">Precio Promedio</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalValue">$0</div>
+                    <div class="stat-label">Valor Total</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="results-header">
+            <div class="results-count" id="resultsCount">Mostrando 0 resultados</div>
+            <div class="view-toggle">
+                <button class="view-btn active" onclick="toggleView('grid')" id="gridViewBtn">🔲 Tarjetas</button>
+                <button class="view-btn" onclick="toggleView('table')" id="tableViewBtn">📋 Tabla</button>
+            </div>
+        </div>
+
+        <!-- Vista de Tarjetas -->
+        <div class="products-grid" id="productsGrid">
+            <div class="loading">Cargando componentes...</div>
+        </div>
+
+        <!-- Vista de Tabla -->
+        <div class="table-view" id="tableView">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th onclick="sortTable(0)">Fecha <span class="sort-arrow">↕</span></th>
+                        <th onclick="sortTable(1)">Descripción <span class="sort-arrow">↕</span></th>
+                        <th onclick="sortTable(2)">Proveedor <span class="sort-arrow">↕</span></th>
+                        <th onclick="sortTable(3)">Marca <span class="sort-arrow">↕</span></th>
+                        <th onclick="sortTable(4)">Modelo <span class="sort-arrow">↕</span></th>
+                        <th onclick="sortTable(5)">Tipo <span class="sort-arrow">↕</span></th>
+                        <th onclick="sortTable(6)">Material <span class="sort-arrow">↕</span></th>
+                        <th onclick="sortTable(7)">Diámetro <span class="sort-arrow">↕</span></th>
+                        <th onclick="sortTable(8)">Precio Unit. <span class="sort-arrow">↕</span></th>
+                        <th onclick="sortTable(9)">Cantidad <span class="sort-arrow">↕</span></th>
+                        <th onclick="sortTable(10)">Total <span class="sort-arrow">↕</span></th>
+                        <th onclick="sortTable(11)">Plazo <span class="sort-arrow">↕</span></th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+        <div class="pagination" id="pagination"></div>
+    </div>
+
+    <!-- Modal para detalles -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Detalles del Componente</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- Agregar noUiSlider JS antes de </body> -->
+    <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
+    <script>
+        let allData = [];
+        let filteredData = [];
+        let currentPage = 1;
+        let rowsPerPage = 12;
+        let sortColumn = 0;
+        let sortDirection = 'asc';
+        let currentView = 'grid';
+
+        // Variables globales para el filtro de proveedor
+        let selectedProviders = [];
+        let allProviders = [];
+        let providerCounts = {};
+
+        // Variables globales para el slider de rango de precio
+        let priceRangeMin = 0;
+        let priceRangeMax = 1000000;
+        let priceRangeSlider = null;
+        let isDragging = false;
+        let activeHandle = null;
+
+        // Función para obtener imagen genérica basada en el tipo de componente
+        function getComponentImage(component) {
+            const tipo = component['Tipo de Componente']?.toLowerCase() || '';
+            const descripcion = component['Descripción del Producto - Resumida']?.toLowerCase() || '';
+            
+            // Si hay una columna de imagen específica en el futuro, usarla
+            if (component['Imagen'] && component['Imagen'] !== 'No especificado') {
+                return component['Imagen'];
+            }
+            
+            // Válvulas
+            if (tipo.includes('válvula') || descripcion.includes('válvula') || descripcion.includes('valve')) {
+                return 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=300&h=200&fit=crop';
+            }
+            
+            // Bombas
+            if (tipo.includes('bomba') || descripcion.includes('bomba') || descripcion.includes('pump')) {
+                return 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=300&h=200&fit=crop';
+            }
+            
+            // Filtros
+            if (tipo.includes('filtro') || descripcion.includes('filtro') || descripcion.includes('filter')) {
+                return 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=300&h=200&fit=crop';
+            }
+            
+            // Sensores y electrónica
+            if (tipo.includes('sensor') || descripcion.includes('sensor') || tipo.includes('controlador')) {
+                return 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=300&h=200&fit=crop';
+            }
+            
+            // Cables eléctricos
+            if (tipo.includes('cable') || descripcion.includes('cable') || descripcion.includes('eléctrico')) {
+                return 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=300&h=200&fit=crop';
+            }
+            
+            // Tuberías y cañerías
+            if (tipo.includes('tubo') || tipo.includes('cañería') || descripcion.includes('tubo') || descripcion.includes('cañería')) {
+                return 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=300&h=200&fit=crop';
+            }
+            
+            // Válvulas de bola específicamente
+            if (descripcion.includes('bola') || tipo.includes('bola')) {
+                return 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=300&h=200&fit=crop';
+            }
+            
+            // Bridas y conexiones
+            if (tipo.includes('brida') || tipo.includes('flange') || descripcion.includes('brida')) {
+                return 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=300&h=200&fit=crop';
+            }
+            
+            // Mangueras
+            if (tipo.includes('manguera') || descripcion.includes('manguera') || descripcion.includes('hose')) {
+                return 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=300&h=200&fit=crop';
+            }
+            
+            // Servicios
+            if (component['Tipo de item'] === 'Servicio') {
+                return 'https://images.unsplash.com/photo-1581093458791-9d42c0e58e4c?w=300&h=200&fit=crop';
+            }
+            
+            // Por defecto - imagen "No disponible"
+            return 'https://static.vecteezy.com/system/resources/previews/022/059/000/non_2x/no-image-available-icon-vector.jpg';
+        }
+
+        // Función para obtener logo de proveedor basado en el índice
+        function getSupplierLogo(supplierIndex) {
+            // Array de colores para logos genéricos
+            const colors = [
+                '#2c5aa0', '#28a745', '#dc3545', '#ffc107', '#6f42c1',
+                '#fd7e14', '#20c997', '#6c757d', '#007bff', '#e83e8c'
+            ];
+            
+            // Array de iconos/letras para logos
+            const icons = ['🏢', '🏭', '⚙️', '🔧', '🏗️', '🔩', '📦', '🚀', '💼', '🎯'];
+            
+            if (supplierIndex >= 0 && supplierIndex < icons.length) {
+                const color = colors[supplierIndex % colors.length];
+                const icon = icons[supplierIndex % icons.length];
+                
+                // Crear un logo SVG simple con icono y color
+                return `data:image/svg+xml,${encodeURIComponent(`
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="24" height="24" rx="4" fill="${color}"/>
+                        <text x="12" y="16" text-anchor="middle" fill="white" font-size="12" font-family="Arial">${icon}</text>
+                    </svg>
+                `)}`;
+            }
+            
+            // Logo por defecto
+            return `data:image/svg+xml,${encodeURIComponent(`
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="24" height="24" rx="4" fill="#6c757d"/>
+                    <text x="12" y="16" text-anchor="middle" fill="white" font-size="12" font-family="Arial">🏢</text>
+                </svg>
+            `)}`;
+        }
+
+        // Función para obtener logo de proveedor basado en el índice
+        function getSupplierLogo(supplierIndex) {
+            // Array de colores para logos genéricos
+            const colors = [
+                '#2c5aa0', '#28a745', '#dc3545', '#ffc107', '#6f42c1',
+                '#fd7e14', '#20c997', '#6c757d', '#007bff', '#e83e8c'
+            ];
+            
+            // Array de iconos/letras para logos
+            const icons = ['🏢', '🏭', '⚙️', '🔧', '🏗️', '🔩', '📦', '🚀', '💼', '🎯'];
+            
+            if (supplierIndex >= 0 && supplierIndex < icons.length) {
+                const color = colors[supplierIndex % colors.length];
+                const icon = icons[supplierIndex % icons.length];
+                
+                // Crear un logo SVG simple con icono y color
+                return `data:image/svg+xml,${encodeURIComponent(`
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="24" height="24" rx="4" fill="${color}"/>
+                        <text x="12" y="16" text-anchor="middle" fill="white" font-size="12" font-family="Arial">${icon}</text>
+                    </svg>
+                `)}`;
+            }
+            
+            // Logo por defecto
+            return `data:image/svg+xml,${encodeURIComponent(`
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="24" height="24" rx="4" fill="#6c757d"/>
+                    <text x="12" y="16" text-anchor="middle" fill="white" font-size="12" font-family="Arial">🏢</text>
+                </svg>
+            `)}`;
+        }
+
+        // Función para obtener logo de proveedor basado en el índice
+        function getSupplierLogo(supplierIndex) {
+            // Array de colores para logos genéricos
+            const colors = [
+                '#2c5aa0', '#28a745', '#dc3545', '#ffc107', '#6f42c1',
+                '#fd7e14', '#20c997', '#6c757d', '#007bff', '#e83e8c'
+            ];
+            
+            // Array de iconos/letras para logos
+            const icons = ['🏢', '🏭', '⚙️', '🔧', '🏗️', '🔩', '📦', '🚀', '💼', '🎯'];
+            
+            if (supplierIndex >= 0 && supplierIndex < icons.length) {
+                const color = colors[supplierIndex % colors.length];
+                const icon = icons[supplierIndex % icons.length];
+                
+                // Crear un logo SVG simple con icono y color
+                return `data:image/svg+xml,${encodeURIComponent(`
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="24" height="24" rx="4" fill="${color}"/>
+                        <text x="12" y="16" text-anchor="middle" fill="white" font-size="12" font-family="Arial">${icon}</text>
+                    </svg>
+                `)}`;
+            }
+            
+            // Logo por defecto
+            return `data:image/svg+xml,${encodeURIComponent(`
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="24" height="24" rx="4" fill="#6c757d"/>
+                    <text x="12" y="16" text-anchor="middle" fill="white" font-size="12" font-family="Arial">🏢</text>
+                </svg>
+            `)}`;
+        }
+
+        // Función para mostrar/ocultar carga de archivo
+        function loadFileInput() {
+            const fileUpload = document.getElementById('fileUpload');
+            fileUpload.style.display = fileUpload.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Manejar carga de archivo
+        document.getElementById('csvFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    parseCSV(e.target.result);
+                    document.getElementById('fileUpload').style.display = 'none';
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        // Cargar datos por defecto
+        async function loadDefaultData() {
+            try {
+                const response = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vTnf4Sm6V9ZWNHbHKDtC10sXRmxtdvO66SMFeIGIGE7SYeUgqbqeod010MNeGV0p3KIVcPOVmhBwpFI/pub?gid=0&single=true&output=csv');
+                if (!response.ok) throw new Error('No se pudo descargar el archivo CSV');
+                const csvText = await response.text();
+                parseCSV(csvText);
+            } catch (err) {
+                alert('Error al cargar datos desde Google Drive: ' + err.message);
+            }
+        }
+
+        // --- Slider de precio con noUiSlider ---
+        let priceSlider;
+        function initPriceRangeSlider() {
+            const sliderElem = document.getElementById('priceRangeSlider');
+            const minValueElem = document.getElementById('priceRangeMinValue');
+            const maxValueElem = document.getElementById('priceRangeMaxValue');
+            const minInput = document.getElementById('priceRangeMinInput');
+            const maxInput = document.getElementById('priceRangeMaxInput');
+            // Obtener precios de los datos
+            const prices = allData.map(row => parseFloat(row['Precio Unitario Neto en CLP']) || 0).filter(p => p > 0);
+            let min = 0, max = 1000000;
+            if (prices.length > 0) {
+                min = Math.floor(Math.min(...prices));
+                max = Math.ceil(Math.max(...prices));
+            }
+            // Destruir slider anterior si existe
+            if (priceSlider && priceSlider.noUiSlider) {
+                priceSlider.noUiSlider.destroy();
+            }
+            // Crear slider
+            priceSlider = sliderElem;
+            noUiSlider.create(priceSlider, {
+                start: [min, max],
+                connect: true,
+                step: 1,
+                range: {
+                    'min': min,
+                    'max': max
+                },
+                tooltips: [true, true],
+                format: {
+                    to: value => '$' + Math.round(value).toLocaleString(),
+                    from: value => Number(value.replace(/[^\d.]/g, ''))
+                }
+            });
+            // Actualizar inputs y etiquetas al mover el slider
+            priceSlider.noUiSlider.on('update', function(values, handle) {
+                const minVal = Math.round(priceSlider.noUiSlider.get(true)[0]);
+                const maxVal = Math.round(priceSlider.noUiSlider.get(true)[1]);
+                minValueElem.textContent = '$' + minVal.toLocaleString();
+                maxValueElem.textContent = '$' + maxVal.toLocaleString();
+                minInput.value = minVal;
+                maxInput.value = maxVal;
+            });
+            // Aplicar filtro al soltar el slider
+            priceSlider.noUiSlider.on('change', function() {
+                applyFilters();
+            });
+            // Inputs numéricos sincronizados
+            minInput.addEventListener('change', function() {
+                let minVal = parseInt(this.value) || min;
+                let maxVal = parseInt(maxInput.value) || max;
+                if (minVal > maxVal) minVal = maxVal;
+                priceSlider.noUiSlider.set([minVal, null]);
+                applyFilters();
+            });
+            maxInput.addEventListener('change', function() {
+                let minVal = parseInt(minInput.value) || min;
+                let maxVal = parseInt(this.value) || max;
+                if (maxVal < minVal) maxVal = minVal;
+                priceSlider.noUiSlider.set([null, maxVal]);
+                applyFilters();
+            });
+        }
+
+        // Parsear CSV
+        function parseCSV(csvText) {
+            const lines = csvText.split('\n');
+            const headers = lines[0].split(',');
+            allData = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                if (lines[i].trim()) {
+                    const values = parseCSVLine(lines[i]);
+                    if (values.length >= headers.length) {
+                        const row = {};
+                        headers.forEach((header, index) => {
+                            row[header.trim()] = values[index] ? values[index].trim().replace(/"/g, '') : '';
+                        });
+                        allData.push(row);
+                    }
+                }
+            }
+
+            filteredData = [...allData];
+            populateFilters();
+            updateStats();
+            displayData();
+        }
+
+        // Parsear línea CSV considerando comillas
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current);
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            
+            result.push(current);
+            return result;
+        }
+
+        // Poblar filtros
+        function populateFilters() {
+            const providers = [...new Set(allData.map(row => row['Nombre del Proveedor']).filter(p => p))].sort();
+            const brands = [...new Set(allData.map(row => row['Marca del Componente']).filter(b => b && b !== 'No especificado'))].sort();
+            const types = [...new Set(allData.map(row => row['Tipo de Componente']).filter(t => t && t !== 'No especificado'))].sort();
+            const modelos = [...new Set(allData.map(row => row['Modelo del Componente']).filter(m => m && m !== 'No especificado'))].sort();
+
+            populateSelect('proveedorFilter', providers);
+            populateSelect('marcaFilter', brands);
+            populateSelect('tipoFilter', types);
+            populateSelect('modeloFilter', modelos);
+            // Inicializar slider de precio
+            initPriceRangeSlider();
+        }
+
+        // Poblar select
+        function populateSelect(selectId, options) {
+            const select = document.getElementById(selectId);
+            const currentValue = select.value;
+            
+            // Limpiar opciones excepto la primera
+            while (select.children.length > 1) {
+                select.removeChild(select.lastChild);
+            }
+            
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option;
+                optionElement.textContent = option;
+                select.appendChild(optionElement);
+            });
+            
+            select.value = currentValue;
+        }
+
+        // Función simple para obtener proveedores seleccionados
+        function getSelectedProviders() {
+            return selectedProviders;
+        }
+
+        // Función simple para actualizar el texto del botón
+        function updateProveedorButtonText() {
+            const btnText = document.getElementById('proveedorDropdownBtnText');
+            if (!btnText) return;
+            
+            if (selectedProviders.length === 0) {
+                btnText.textContent = 'Todos los proveedores';
+            } else {
+                btnText.innerHTML = `<span class="selected-count">${selectedProviders.length} seleccionados</span>`;
+            }
+        }
+
+        // Función simple para poblar el filtro de proveedor
+        function populateProveedorFilter(providers, dataForCounts) {
+            allProviders = providers;
+            providerCounts = {};
+            
+            // Calcular contadores
+            if (dataForCounts && dataForCounts.length > 0) {
+                dataForCounts.forEach(row => {
+                    const provider = row['Nombre del Proveedor'];
+                    if (provider) {
+                        providerCounts[provider] = (providerCounts[provider] || 0) + 1;
+                    }
+                });
+            }
+            
+            // Limpiar contenedor
+            const container = document.getElementById('proveedorCheckboxes');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            // Crear checkboxes
+            providers.forEach(provider => {
+                const count = providerCounts[provider] || 0;
+                const checkboxItem = document.createElement('div');
+                checkboxItem.className = 'checkbox-item';
+                checkboxItem.innerHTML = `
+                    <div class="checkbox-left">
+                        <input type="checkbox" id="provider_${provider}" class="checkbox-input" value="${provider}" />
+                        <label for="provider_${provider}" class="checkbox-label">${provider}</label>
+                    </div>
+                    <span class="provider-count">${count}</span>
+                `;
+                
+                const checkbox = checkboxItem.querySelector('.checkbox-input');
+                const label = checkboxItem.querySelector('.checkbox-label');
+                
+                // Event listeners simples
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        if (!selectedProviders.includes(this.value)) {
+                            selectedProviders.push(this.value);
+                        }
+                    } else {
+                        selectedProviders = selectedProviders.filter(p => p !== this.value);
+                    }
+                    updateProveedorButtonText();
+                    applyFilters();
+                });
+                
+                label.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    checkbox.checked = !checkbox.checked;
+                    checkbox.dispatchEvent(new Event('change'));
+                });
+                
+                container.appendChild(checkboxItem);
+            });
+            
+            updateProveedorButtonText();
+        }
+
+        // Función simple para configurar búsqueda
+        function setupProveedorSearch() {
+            const searchInput = document.getElementById('proveedorSearch');
+            const selectAllBtn = document.getElementById('selectAllProviders');
+            const deselectAllBtn = document.getElementById('deselectAllProviders');
+            
+            if (!searchInput || !selectAllBtn || !deselectAllBtn) return;
+            
+            // Búsqueda
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const items = document.querySelectorAll('.checkbox-item');
+                
+                items.forEach(item => {
+                    const providerName = item.querySelector('.checkbox-label').textContent.toLowerCase();
+                    if (providerName.includes(searchTerm)) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Seleccionar todos visibles
+            selectAllBtn.addEventListener('click', function() {
+                const visibleItems = document.querySelectorAll('.checkbox-item[style*="flex"]');
+                visibleItems.forEach(item => {
+                    const checkbox = item.querySelector('.checkbox-input');
+                    if (!checkbox.checked) {
+                        checkbox.checked = true;
+                        checkbox.dispatchEvent(new Event('change'));
+                    }
+                });
+            });
+            
+            // Deseleccionar todos
+            deselectAllBtn.addEventListener('click', function() {
+                selectedProviders = [];
+                const checkboxes = document.querySelectorAll('.checkbox-input');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                updateProveedorButtonText();
+                applyFilters();
+            });
+        }
+
+        // Dropdown interactivo
+        document.addEventListener('DOMContentLoaded', function() {
+            const proveedorGroup = document.getElementById('proveedorFilterGroup');
+            const proveedorBtn = document.getElementById('proveedorDropdownBtn');
+            
+            if (!proveedorGroup || !proveedorBtn) return;
+            
+            // Toggle dropdown
+            proveedorBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                proveedorGroup.classList.toggle('open');
+                
+                if (proveedorGroup.classList.contains('open')) {
+                    setTimeout(() => {
+                        const search = document.getElementById('proveedorSearch');
+                        if (search) search.focus();
+                    }, 100);
+                }
+            });
+            
+            // Cerrar al hacer click fuera
+            document.addEventListener('click', function(e) {
+                if (!proveedorGroup.contains(e.target)) {
+                    proveedorGroup.classList.remove('open');
+                }
+            });
+            
+            // Configurar búsqueda
+            setupProveedorSearch();
+        });
+
+        // Aplicar filtros
+        function applyFilters() {
+            const searchTerm = document.getElementById('mainSearch').value.toLowerCase();
+            const proveedorFilter = document.getElementById('proveedorFilter').value;
+            const marcaFilter = document.getElementById('marcaFilter').value;
+            const tipoFilter = document.getElementById('tipoFilter').value;
+            const modeloFilter = document.getElementById('modeloFilter').value;
+            // Obtener rango del slider
+            let minPrice = 0, maxPrice = Infinity;
+            if (priceSlider && priceSlider.noUiSlider) {
+                minPrice = Math.round(priceSlider.noUiSlider.get(true)[0]);
+                maxPrice = Math.round(priceSlider.noUiSlider.get(true)[1]);
+            }
+            filteredData = allData.filter(row => {
+                if (searchTerm) {
+                    const searchableText = Object.values(row).join(' ').toLowerCase();
+                    if (!searchableText.includes(searchTerm)) return false;
+                }
+                if (proveedorFilter && row['Nombre del Proveedor'] !== proveedorFilter) return false;
+                if (marcaFilter && row['Marca del Componente'] !== marcaFilter) return false;
+                if (tipoFilter && row['Tipo de Componente'] !== tipoFilter) return false;
+                if (modeloFilter && row['Modelo del Componente'] !== modeloFilter) return false;
+                const price = parseFloat(row['Precio Unitario Neto en CLP']) || 0;
+                if (price < minPrice || price > maxPrice) return false;
+                return true;
+            });
+            currentPage = 1;
+            updateStats();
+            displayData();
+            // Actualizar proveedores visibles en el select según los resultados filtrados
+            const providers = [...new Set(filteredData.map(row => row['Nombre del Proveedor']).filter(p => p))].sort();
+            populateSelect('proveedorFilter', providers);
+        }
+
+        // Limpiar filtros también resetea el slider
+        function clearFilters() {
+            document.getElementById('mainSearch').value = '';
+            document.getElementById('proveedorFilter').value = '';
+            document.getElementById('marcaFilter').value = '';
+            document.getElementById('tipoFilter').value = '';
+            document.getElementById('modeloFilter').value = '';
+            // Resetear slider
+            if (priceSlider && priceSlider.noUiSlider) {
+                const range = priceSlider.noUiSlider.options.range;
+                priceSlider.noUiSlider.set([range.min, range.max]);
+            }
+            filteredData = [...allData];
+            currentPage = 1;
+            updateStats();
+            displayData();
+            const providers = [...new Set(allData.map(row => row['Nombre del Proveedor']).filter(p => p))].sort();
+            populateSelect('proveedorFilter', providers);
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            const totalItems = filteredData.length;
+            const totalProviders = new Set(filteredData.map(row => row['Nombre del Proveedor']).filter(p => p)).size;
+            
+            const prices = filteredData.map(row => parseFloat(row['Precio Unitario Neto en CLP']) || 0).filter(p => p > 0);
+            const avgPrice = prices.length > 0 ? prices.reduce((a, b) => a + b, 0) / prices.length : 0;
+            
+            const totalValues = filteredData.map(row => parseFloat(row['Precio Total Neto en CLP']) || 0);
+            const totalValue = totalValues.reduce((a, b) => a + b, 0);
+
+            document.getElementById('totalItems').textContent = totalItems.toLocaleString();
+            document.getElementById('totalProviders').textContent = totalProviders.toLocaleString();
+            document.getElementById('avgPrice').textContent = '$' + Math.round(avgPrice).toLocaleString();
+            document.getElementById('totalValue').textContent = '$' + Math.round(totalValue).toLocaleString();
+            
+            document.getElementById('resultsCount').textContent = `Mostrando ${totalItems.toLocaleString()} resultados`;
+        }
+
+        // Cambiar vista
+        function toggleView(view) {
+            currentView = view;
+            const gridView = document.getElementById('productsGrid');
+            const tableView = document.getElementById('tableView');
+            const gridBtn = document.getElementById('gridViewBtn');
+            const tableBtn = document.getElementById('tableViewBtn');
+
+            if (view === 'grid') {
+                gridView.style.display = 'grid';
+                tableView.style.display = 'none';
+                gridBtn.classList.add('active');
+                tableBtn.classList.remove('active');
+                rowsPerPage = 12;
+            } else {
+                gridView.style.display = 'none';
+                tableView.style.display = 'block';
+                tableBtn.classList.add('active');
+                gridBtn.classList.remove('active');
+                rowsPerPage = 20;
+            }
+
+            currentPage = 1;
+            displayData();
+        }
+
+        // Mostrar datos
+        function displayData() {
+            if (currentView === 'grid') {
+                displayGridData();
+            } else {
+                displayTableData();
+            }
+            updatePagination();
+        }
+
+        // Mostrar datos en vista de tarjetas
+        function displayGridData() {
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = startIndex + rowsPerPage;
+            const pageData = filteredData.slice(startIndex, endIndex);
+
+            const grid = document.getElementById('productsGrid');
+            
+            if (pageData.length === 0) {
+                grid.innerHTML = '<div class="no-results">No se encontraron componentes</div>';
+                return;
+            }
+
+            grid.innerHTML = pageData.map((row, index) => {
+                const price = parseFloat(row['Precio Unitario Neto en CLP']) || 0;
+                const total = parseFloat(row['Precio Total Neto en CLP']) || 0;
+                const priceClass = price > 100000 ? 'price-high' : '';
+                const imageUrl = getComponentImage(row);
+                
+                // Obtener los proveedores únicos para mostrar el logo
+                const suppliers = [...new Set(allData.map(item => item['Nombre del Proveedor']).filter(Boolean))];
+                const proveedorActual = row['Nombre del Proveedor'] || 'Sin proveedor';
+                const supplierIndex = suppliers.indexOf(proveedorActual);
+                const supplierLogo = getSupplierLogo(supplierIndex);
+                
+                return `
+                    <div class="product-card solotodo-style" onclick="showDetails(${startIndex + index})">
+                        <div class="product-image">
+                            <img src="${imageUrl}" alt="${row['Descripción del Producto - Resumida']}" 
+                                 onerror="this.src='https://static.vecteezy.com/system/resources/previews/022/059/000/non_2x/no-image-available-icon-vector.jpg'" />
+                            ${row['Link archivo PDF'] && row['Link archivo PDF'] !== 'No encontrado' ? 
+                                '<div class="pdf-badge">📄 PDF</div>' : ''}
+                        </div>
+                        <div class="product-info">
+                            <div class="product-title">${row['Descripción del Producto - Resumida'] || 'Sin descripción'}</div>
+                            <div class="product-price">
+                                <span class="price-main ${priceClass}">$${price.toLocaleString()}</span>
+                                ${row['Cantidad'] && row['Cantidad'] > 1 ? 
+                                    `<span class="price-quantity">x${row['Cantidad']}</span>` : ''}
+                            </div>
+                            <div class="product-details">
+                                ${row['Tipo de Componente'] && row['Tipo de Componente'] !== 'No especificado' ? 
+                                    `<div class="detail-item">
+                                        <span class="detail-label">Tipo:</span>
+                                        <span class="detail-value">${row['Tipo de Componente']}</span>
+                                    </div>` : ''}
+                                ${row['Marca del Componente'] && row['Marca del Componente'] !== 'No especificado' ? 
+                                    `<div class="detail-item">
+                                        <span class="detail-label">Marca:</span>
+                                        <span class="detail-value">${row['Marca del Componente']}</span>
+                                    </div>` : ''}
+                                ${row['Modelo del Componente'] && row['Modelo del Componente'] !== 'No especificado' ? 
+                                    `<div class="detail-item">
+                                        <span class="detail-label">Modelo:</span>
+                                        <span class="detail-value">${row['Modelo del Componente']}</span>
+                                    </div>` : ''}
+                                ${row['Plazo de entrega'] && row['Plazo de entrega'] !== 'No especificado' ? 
+                                    `<div class="detail-item">
+                                        <span class="detail-label">Plazo de entrega:</span>
+                                        <span class="detail-value">${row['Plazo de entrega']}</span>
+                                    </div>` : ''}
+                            </div>
+                            <div class="product-supplier">
+                                <div class="supplier-info">
+                                    <img src="${supplierLogo}" alt="${proveedorActual}" class="supplier-logo" />
+                                    <span class="supplier-name">${proveedorActual}</span>
+                                </div>
+                            </div>
+                            <div class="product-actions">
+                                <button class="btn btn-primary btn-small" onclick="event.stopPropagation(); showDetails(${startIndex + index})">
+                                    Ver Detalles
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Mostrar datos en vista de tabla
+        function displayTableData() {
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = startIndex + rowsPerPage;
+            const pageData = filteredData.slice(startIndex, endIndex);
+
+            const tbody = document.getElementById('tableBody');
+            
+            if (pageData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="13" class="no-results">No se encontraron resultados</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = pageData.map((row, index) => {
+                const price = parseFloat(row['Precio Unitario Neto en CLP']) || 0;
+                const total = parseFloat(row['Precio Total Neto en CLP']) || 0;
+                const priceClass = price > 100000 ? 'price-high' : '';
+                
+                return `
+                    <tr>
+                        <td>${row['Fecha y hora']}</td>
+                        <td title="${row['Descripción del Producto - Original']}">${truncateText(row['Descripción del Producto - Resumida'], 50)}</td>
+                        <td>${row['Nombre del Proveedor']}</td>
+                        <td>${row['Marca del Componente']}</td>
+                        <td>${row['Modelo del Componente']}</td>
+                        <td>${row['Tipo de Componente']}</td>
+                        <td>${row['Material']}</td>
+                        <td>${row['Diámetro']}</td>
+                        <td class="${priceClass}">$${price.toLocaleString()}</td>
+                        <td>${row['Cantidad']}</td>
+                        <td class="${priceClass}">$${total.toLocaleString()}</td>
+                        <td>${row['Plazo de entrega']}</td>
+                        <td>
+                            <button class="btn btn-primary btn-small" onclick="showDetails(${startIndex + index})">Ver</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Truncar texto
+        function truncateText(text, maxLength) {
+            if (!text) return '';
+            return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+        }
+
+        // Mostrar detalles
+        function showDetails(index) {
+            const row = filteredData[index];
+            const modal = document.getElementById('detailModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+
+            modalTitle.textContent = row['Descripción del Producto - Resumida'];
+            
+            const imageUrl = getComponentImage(row);
+            const pdfLink = row['Link archivo PDF'] || '';
+            
+            // Verificar si hay un enlace PDF válido
+            const hasPDF = pdfLink && pdfLink.trim() !== '' && pdfLink !== 'No encontrado';
+            
+            modalBody.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px; margin-bottom: 20px;">
+                    <div>
+                        <img src="${imageUrl}" alt="${row['Descripción del Producto - Resumida']}" 
+                             style="width: 100%; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);"
+                             onerror="this.src='https://via.placeholder.com/400x300/f8f9fa/666?text=Sin+Imagen'" />
+                    </div>
+                    <div>
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                            <h3 style="color: #2c5aa0; margin-bottom: 10px;">💰 Información de Precio</h3>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                <div>
+                                    <strong>Precio Unitario:</strong><br>
+                                    <span style="font-size: 1.3em; color: #28a745; font-weight: bold;">
+                                        $${(parseFloat(row['Precio Unitario Neto en CLP']) || 0).toLocaleString()}
+                                    </span>
+                                </div>
+                                <div>
+                                    <strong>Cantidad:</strong><br>
+                                    <span style="font-size: 1.2em;">${row['Cantidad'] || 1}</span>
+                                </div>
+                                <div style="grid-column: span 2;">
+                                    <strong>Precio Total:</strong><br>
+                                    <span style="font-size: 1.4em; color: #dc3545; font-weight: bold;">
+                                        $${(parseFloat(row['Precio Total Neto en CLP']) || 0).toLocaleString()}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-grid">
+                    <div class="detail-label">📅 Fecha:</div>
+                    <div class="detail-value">${row['Fecha y hora']}</div>
+                    
+                    <div class="detail-label">🏢 Proveedor:</div>
+                    <div class="detail-value">${row['Nombre del Proveedor']}</div>
+                    
+                    <div class="detail-label">🏷️ Marca:</div>
+                    <div class="detail-value">${row['Marca del Componente']}</div>
+                    
+                    <div class="detail-label">🔧 Modelo:</div>
+                    <div class="detail-value">${row['Modelo del Componente']}</div>
+                    
+                    <div class="detail-label">📦 Tipo Componente:</div>
+                    <div class="detail-value">${row['Tipo de Componente']}</div>
+                    
+                    <div class="detail-label">🔨 Material:</div>
+                    <div class="detail-value">${row['Material']}</div>
+                    
+                    <div class="detail-label">📏 Diámetro:</div>
+                    <div class="detail-value">${row['Diámetro']}</div>
+                    
+                    <div class="detail-label">⏱️ Plazo Entrega:</div>
+                    <div class="detail-value">${row['Plazo de entrega']}</div>
+                    
+                    <div class="detail-label">📄 Descripción Original:</div>
+                    <div class="detail-value">${row['Descripción del Producto - Original'] || 'No disponible'}</div>
+                </div>
+                
+                ${hasPDF ? `
+                    <div class="pdf-section">
+                        <h3 style="color: #2c5aa0; margin-bottom: 15px; text-align: center;">📋 Documentación PDF</h3>
+                        <div class="pdf-buttons">
+                            <button class="btn-pdf btn-pdf-view" onclick="showPDFViewer('${pdfLink}')">
+                                📖 Ver PDF en Página
+                            </button>
+                            <button class="btn-pdf btn-pdf-open" onclick="openWithGoogleViewer('${pdfLink}')" style="background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);">
+                                🔍 Ver con Google Docs
+                            </button>
+                            <button class="btn-pdf btn-pdf-hide" id="hidePdfBtn" onclick="hidePDFViewer()" style="display: none;">
+                                ❌ Ocultar PDF
+                            </button>
+                        </div>
+                        <div class="pdf-viewer" id="pdfViewer">
+                            <div class="pdf-loading">Cargando documento PDF...</div>
+                        </div>
+                    </div>
+                ` : `
+                    <div class="pdf-section">
+                        <h3 style="color: #666; margin-bottom: 15px; text-align: center;">📋 Documentación PDF</h3>
+                        <p style="text-align: center; color: #999; font-style: italic;">No hay documento PDF disponible para este componente</p>
+                    </div>
+                `}
+            `;
+
+            modal.style.display = 'block';
+        }
+
+        // Funciones para el visor de PDF
+        function showPDFViewer(pdfUrl) {
+            const pdfViewer = document.getElementById('pdfViewer');
+            const hidePdfBtn = document.getElementById('hidePdfBtn');
+            
+            if (!pdfViewer || !pdfUrl) return;
+            
+            // Limpiar el contenido anterior
+            pdfViewer.innerHTML = `
+                <div class="pdf-loading">
+                    <div style="margin-bottom: 15px;">⏳ Cargando documento PDF...</div>
+                    <div style="font-size: 14px; color: #999;">Probando diferentes métodos de visualización</div>
+                    <div style="margin-top: 10px;">
+                        <div style="width: 200px; height: 4px; background: #e9ecef; border-radius: 2px; overflow: hidden;">
+                            <div style="width: 100%; height: 100%; background: #2c5aa0; animation: loading 2s infinite linear;"></div>
+                        </div>
+                    </div>
+                </div>
+                <style>
+                    @keyframes loading {
+                        0% { transform: translateX(-100%); }
+                        100% { transform: translateX(100%); }
+                    }
+                </style>
+            `;
+            
+            // Mostrar el visor
+            pdfViewer.style.display = 'block';
+            hidePdfBtn.style.display = 'inline-flex';
+            
+            // Scroll suave hacia el visor
+            setTimeout(() => {
+                pdfViewer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+            
+            // Intentar cargar el PDF con diferentes métodos
+            loadPDFContent(pdfUrl, pdfViewer);
+        }
+        
+        function loadPDFContent(pdfUrl, container) {
+            // Limpiar la URL si es necesario
+            let cleanUrl = pdfUrl.trim();
+            let attempts = [];
+            
+            // Si es un enlace de Google Drive, preparar múltiples intentos
+            if (cleanUrl.includes('drive.google.com')) {
+                // Extraer el ID del archivo de Google Drive
+                const fileIdMatch = cleanUrl.match(/\/d\/([a-zA-Z0-9-_]+)/);
+                if (fileIdMatch) {
+                    const fileId = fileIdMatch[1];
+                    
+                    // Múltiples métodos para Google Drive
+                    attempts = [
+                        `https://drive.google.com/file/d/${fileId}/preview`,
+                        `https://docs.google.com/viewer?srcid=${fileId}&pid=explorer&efh=false&a=v&chrome=false&embedded=true`,
+                        `https://docs.google.com/viewer?url=${encodeURIComponent(cleanUrl)}&embedded=true`,
+                        cleanUrl // URL original como último recurso
+                    ];
+                } else {
+                    attempts = [cleanUrl];
+                }
+            } else {
+                // Para otros servicios, intentar con Google Docs Viewer como fallback
+                attempts = [
+                    cleanUrl,
+                    `https://docs.google.com/viewer?url=${encodeURIComponent(cleanUrl)}&embedded=true`
+                ];
+            }
+            
+            // Función para intentar cargar con diferentes URLs
+            function tryLoadPDF(urlIndex = 0) {
+                if (urlIndex >= attempts.length) {
+                    // Si todos los intentos fallan, mostrar mensaje de error
+                    showPDFError(container, pdfUrl);
+                    return;
+                }
+                
+                const currentUrl = attempts[urlIndex];
+                const iframe = document.createElement('iframe');
+                iframe.src = currentUrl;
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                iframe.style.border = 'none';
+                iframe.style.borderRadius = '8px';
+                iframe.style.background = 'white';
+                
+                let loaded = false;
+                
+                // Manejar carga exitosa
+                iframe.onload = function() {
+                    // Verificar si realmente cargó contenido
+                    setTimeout(() => {
+                        try {
+                            // Intentar acceder al contenido del iframe
+                            const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+                            if (iframeDoc && !loaded) {
+                                loaded = true;
+                                container.innerHTML = '';
+                                container.appendChild(iframe);
+                                
+                                // Agregar indicador de éxito
+                                const successDiv = document.createElement('div');
+                                successDiv.style.cssText = `
+                                    position: absolute;
+                                    top: 10px;
+                                    right: 10px;
+                                    background: #28a745;
+                                    color: white;
+                                    padding: 5px 10px;
+                                    border-radius: 15px;
+                                    font-size: 12px;
+                                    z-index: 1000;
+                                `;
+                                successDiv.textContent = '✓ PDF Cargado';
+                                container.style.position = 'relative';
+                                container.appendChild(successDiv);
+                                
+                                // Ocultar el indicador después de 3 segundos
+                                setTimeout(() => {
+                                    if (successDiv.parentNode) {
+                                        successDiv.remove();
+                                    }
+                                }, 3000);
+                            }
+                        } catch (e) {
+                            // Si no podemos acceder al contenido, asumir que cargó
+                            if (!loaded) {
+                                loaded = true;
+                                container.innerHTML = '';
+                                container.appendChild(iframe);
+                            }
+                        }
+                    }, 2000);
+                };
+                
+                // Manejar errores de carga
+                iframe.onerror = function() {
+                    if (!loaded) {
+                        console.log(`Intento ${urlIndex + 1} falló, probando siguiente método...`);
+                        tryLoadPDF(urlIndex + 1);
+                    }
+                };
+                
+                // Timeout para detectar si no carga
+                setTimeout(() => {
+                    if (!loaded && container.innerHTML.includes('Cargando documento PDF...')) {
+                        console.log(`Timeout en intento ${urlIndex + 1}, probando siguiente método...`);
+                        tryLoadPDF(urlIndex + 1);
+                    }
+                }, 6000);
+                
+                // Añadir iframe temporalmente oculto para probar
+                iframe.style.opacity = '0';
+                container.appendChild(iframe);
+                
+                // Hacer visible después de un momento si no hay errores
+                setTimeout(() => {
+                    if (!loaded) {
+                        iframe.style.opacity = '1';
+                    }
+                }, 500);
+            }
+            
+            // Comenzar con el primer intento
+            tryLoadPDF(0);
+        }
+        
+        function showPDFError(container, originalUrl) {
+            container.innerHTML = `
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #666; padding: 40px; text-align: center;">
+                    <div style="font-size: 3em; margin-bottom: 20px;">📄</div>
+                    <h4 style="margin-bottom: 15px;">Visualización No Disponible</h4>
+                    <p style="margin-bottom: 10px; color: #999;">Google Drive tiene restricciones para visualización embebida.</p>
+                    <p style="margin-bottom: 25px; color: #999;">Para mejores resultados, usa el botón "Abrir en Nueva Pestaña".</p>
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
+                        <button class="btn-pdf btn-pdf-open" onclick="openPDFNewTab('${originalUrl}')" style="margin: 0;">
+                            🔗 Abrir en Nueva Pestaña
+                        </button>
+                        <button class="btn-pdf btn-pdf-hide" onclick="hidePDFViewer()" style="margin: 0;">
+                            ❌ Cerrar Visor
+                        </button>
+                    </div>
+                    <div style="margin-top: 20px; padding: 15px; background: #e9ecef; border-radius: 10px; font-size: 14px; color: #666;">
+                        💡 <strong>Tip:</strong> Para visualización embebida, considera subir los PDFs a un servicio que permita iframe o usar enlaces directos.
+                    </div>
+                </div>
+            `;
+        }
+        
+        function hidePDFViewer() {
+            const pdfViewer = document.getElementById('pdfViewer');
+            const hidePdfBtn = document.getElementById('hidePdfBtn');
+            
+            if (pdfViewer) {
+                pdfViewer.style.display = 'none';
+                pdfViewer.innerHTML = `
+                    <div class="pdf-loading">
+                        <div style="margin-bottom: 15px;">⏳ Cargando documento PDF...</div>
+                        <div style="font-size: 14px; color: #999;">Probando diferentes métodos de visualización</div>
+                    </div>
+                `;
+            }
+            
+            if (hidePdfBtn) {
+                hidePdfBtn.style.display = 'none';
+            }
+        }
+        
+        function openPDFNewTab(pdfUrl) {
+            if (!pdfUrl || pdfUrl.trim() === '') {
+                alert('No hay enlace de PDF disponible');
+                return;
+            }
+            
+            // Abrir en nueva pestaña
+            window.open(pdfUrl.trim(), '_blank', 'noopener,noreferrer');
+        }
+        
+        function openWithGoogleViewer(pdfUrl) {
+            if (!pdfUrl || pdfUrl.trim() === '') {
+                alert('No hay enlace de PDF disponible');
+                return;
+            }
+            
+            let cleanUrl = pdfUrl.trim();
+            let viewerUrl;
+            
+            // Si es un enlace de Google Drive, usar el ID directamente
+            if (cleanUrl.includes('drive.google.com')) {
+                const fileIdMatch = cleanUrl.match(/\/d\/([a-zA-Z0-9-_]+)/);
+                if (fileIdMatch) {
+                    const fileId = fileIdMatch[1];
+                    viewerUrl = `https://docs.google.com/viewer?srcid=${fileId}&pid=explorer&efh=false&a=v&chrome=false`;
+                } else {
+                    viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(cleanUrl)}`;
+                }
+            } else {
+                // Para otros enlaces, usar Google Docs Viewer con la URL
+                viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(cleanUrl)}`;
+            }
+            
+            // Abrir en nueva pestaña
+            window.open(viewerUrl, '_blank', 'noopener,noreferrer');
+        }
+
+        // Ordenar tabla (solo para vista de tabla)
+        function sortTable(columnIndex) {
+            const headers = ['Fecha y hora', 'Descripción del Producto - Resumida', 'Nombre del Proveedor', 
+                           'Marca del Componente', 'Modelo del Componente', 'Tipo de Componente', 
+                           'Material', 'Diámetro', 'Precio Unitario Neto en CLP', 'Cantidad', 
+                           'Precio Total Neto en CLP', 'Plazo de entrega'];
+            
+            const column = headers[columnIndex];
+            
+            if (sortColumn === columnIndex) {
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = columnIndex;
+                sortDirection = 'asc';
+            }
+
+            filteredData.sort((a, b) => {
+                let aVal = a[column] || '';
+                let bVal = b[column] || '';
+
+                // Manejar números
+                if (columnIndex === 8 || columnIndex === 9 || columnIndex === 10) {
+                    aVal = parseFloat(aVal) || 0;
+                    bVal = parseFloat(bVal) || 0;
+                }
+
+                if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+                if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            // Actualizar iconos de ordenamiento
+            document.querySelectorAll('.sort-arrow').forEach((arrow, index) => {
+                if (index === columnIndex) {
+                    arrow.textContent = sortDirection === 'asc' ? '↑' : '↓';
+                } else {
+                    arrow.textContent = '↕';
+                }
+            });
+
+            displayData();
+        }
+
+        // Actualizar paginación
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+            const pagination = document.getElementById('pagination');
+            
+            let paginationHTML = '';
+            
+            // Botón anterior
+            paginationHTML += `<button class="page-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>‹ Anterior</button>`;
+            
+            // Páginas
+            for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
+                paginationHTML += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+            }
+            
+            // Botón siguiente
+            paginationHTML += `<button class="page-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>Siguiente ›</button>`;
+            
+            pagination.innerHTML = paginationHTML;
+        }
+
+        // Cambiar página
+        function changePage(page) {
+            const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                displayData();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // Event listeners
+        document.getElementById('mainSearch').addEventListener('input', debounce(applyFilters, 300));
+        document.querySelectorAll('.filter-select').forEach(select => {
+            select.addEventListener('change', applyFilters);
+        });
+
+        // Modal
+        document.querySelector('.close').onclick = function() {
+            closeModal();
+        };
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('detailModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        };
+
+        function closeModal() {
+            document.getElementById('detailModal').style.display = 'none';
+            // Limpiar el visor de PDF al cerrar el modal
+            hidePDFViewer();
+        }
+
+        // Función debounce
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Cargar datos por defecto al iniciar
+        window.onload = function() {
+            if (window.location.protocol === 'file:') {
+                document.getElementById('csvManualMsg').style.display = 'block';
+                return;
+            }
+            loadDefaultData();
+        };
+    </script>
+</body>
+</html> 
