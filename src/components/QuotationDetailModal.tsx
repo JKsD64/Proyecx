@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Calendar, Building, Tag, Package, Wrench, Ruler, Clock, FileText, ExternalLink, Eye } from 'lucide-react';
+import { X, Calendar, Building, Tag, Package, Wrench, Ruler, Clock, FileText, ExternalLink, ZoomIn, ZoomOut, RotateCw, Maximize2 } from 'lucide-react';
 import { Quotation } from '../types/quotation';
 
 interface QuotationDetailModalProps {
@@ -15,11 +15,15 @@ export const QuotationDetailModal: React.FC<QuotationDetailModalProps> = ({
 }) => {
   const [pdfError, setPdfError] = React.useState(false);
   const [imageError, setImageError] = React.useState(false);
+  const [zoomLevel, setZoomLevel] = React.useState(100);
+  const [rotation, setRotation] = React.useState(0);
 
   // Reset errors when quotation changes
   React.useEffect(() => {
     setPdfError(false);
     setImageError(false);
+    setZoomLevel(100);
+    setRotation(0);
   }, [quotation]);
 
   if (!isOpen || !quotation) return null;
@@ -79,6 +83,22 @@ export const QuotationDetailModal: React.FC<QuotationDetailModalProps> = ({
     }
   };
 
+  const handleZoomIn = () => {
+    setZoomLevel(prev => Math.min(prev + 25, 200));
+  };
+
+  const handleZoomOut = () => {
+    setZoomLevel(prev => Math.max(prev - 25, 50));
+  };
+
+  const handleRotate = () => {
+    setRotation(prev => (prev + 90) % 360);
+  };
+
+  const handleFitToWidth = () => {
+    setZoomLevel(100);
+    setRotation(0);
+  };
   const DetailRow: React.FC<{ icon: React.ReactNode; label: string; value: string }> = ({
     icon, label, value
   }) => (
@@ -210,48 +230,93 @@ export const QuotationDetailModal: React.FC<QuotationDetailModalProps> = ({
                     <FileText className="w-5 h-5 mr-2" />
                     Previsualización PDF
                   </h4>
-                  {quotation['Link archivo PDF'] && (
-                    <button
-                      onClick={handlePDFView}
-                      className="flex items-center px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
-                    >
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      Abrir PDF
-                    </button>
-                  )}
+                  <div className="flex items-center space-x-2">
+                    {quotation['Link archivo PDF'] && (
+                      <button
+                        onClick={handlePDFView}
+                        className="flex items-center px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+                      >
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        Abrir PDF
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* PDF Controls */}
+                {quotation['Link archivo PDF'] && !pdfError && (
+                  <div className="flex items-center justify-between mb-3 p-2 bg-gray-100 rounded-lg">
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={handleZoomOut}
+                        disabled={zoomLevel <= 50}
+                        className="p-1 text-gray-600 hover:text-gray-800 disabled:text-gray-400 disabled:cursor-not-allowed"
+                        title="Reducir zoom"
+                      >
+                        <ZoomOut className="w-4 h-4" />
+                      </button>
+                      
+                      <span className="text-sm font-medium text-gray-700 min-w-[60px] text-center">
+                        {zoomLevel}%
+                      </span>
+                      
+                      <button
+                        onClick={handleZoomIn}
+                        disabled={zoomLevel >= 200}
+                        className="p-1 text-gray-600 hover:text-gray-800 disabled:text-gray-400 disabled:cursor-not-allowed"
+                        title="Aumentar zoom"
+                      >
+                        <ZoomIn className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={handleRotate}
+                        className="p-1 text-gray-600 hover:text-gray-800"
+                        title="Rotar 90°"
+                      >
+                        <RotateCw className="w-4 h-4" />
+                      </button>
+                      
+                      <button
+                        onClick={handleFitToWidth}
+                        className="p-1 text-gray-600 hover:text-gray-800"
+                        title="Ajustar al ancho"
+                      >
+                        <Maximize2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                )}
                 </div>
 
                 {/* PDF Embed */}
-                <div className="w-full h-96 bg-gray-100 rounded-lg overflow-hidden">
+                <div className="w-full h-96 bg-gray-100 rounded-lg overflow-auto">
                   {quotation['Link archivo PDF'] && !pdfError ? (
-                    <div className="relative w-full h-full">
-                    <iframe
+                    <div 
+                      className="w-full h-full flex items-center justify-center"
+                      style={{
+                        transform: `scale(${zoomLevel / 100}) rotate(${rotation}deg)`,
+                        transformOrigin: 'center center',
+                        transition: 'transform 0.3s ease'
+                      }}
+                    >
+                      <iframe
                         src={getPDFEmbedUrl(quotation['Link archivo PDF'])}
-                      className="w-full h-full border-0"
-                      title="Previsualización PDF"
+                        className="w-full h-full border-0"
+                        title="Previsualización PDF"
                         onLoad={(e) => {
                           const iframe = e.target as HTMLIFrameElement;
-                          // Check if iframe loaded successfully
                           try {
                             if (iframe.contentWindow) {
                               iframe.contentWindow.addEventListener('error', () => setPdfError(true));
                             }
                           } catch (error) {
-                            // Cross-origin restrictions, but iframe might still work
                             console.log('PDF preview loaded');
                           }
                         }}
-                    />
-                      {/* Fallback button overlay */}
-                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={handlePDFView}
-                          className="bg-white text-gray-800 px-4 py-2 rounded-md shadow-lg hover:bg-gray-100 transition-colors"
-                        >
-                          <ExternalLink className="w-4 h-4 inline mr-2" />
-                          Ver PDF Completo
-                        </button>
-                      </div>
+                      />
                     </div>
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-gray-400">
