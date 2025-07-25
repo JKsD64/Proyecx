@@ -12,6 +12,7 @@ export interface Quotation {
   "Precio Total Neto en CLP": string;
   "Plazo de entrega": string;
   "Link archivo PDF"?: string;
+  "Link Imagen"?: string;
 }
 
 export interface QuotationFilters {

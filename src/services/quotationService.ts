@@ -82,7 +82,8 @@ export class QuotationService {
         "Precio Unitario Neto en CLP": "0",
         "Cantidad": "1",
         "Precio Total Neto en CLP": "0",
-        "Plazo de entrega": "30 días"
+        "Plazo de entrega": "30 días",
+        "Link Imagen": ""
       },
       {
         "Fecha y hora": "23-06-2025 23:20",
@@ -96,7 +97,8 @@ export class QuotationService {
         "Precio Unitario Neto en CLP": "0",
         "Cantidad": "1",
         "Precio Total Neto en CLP": "0",
-        "Plazo de entrega": "20 días"
+        "Plazo de entrega": "20 días",
+        "Link Imagen": ""
       },
       {
         "Fecha y hora": "28-06-2025 11:36",
@@ -110,7 +112,8 @@ export class QuotationService {
         "Precio Unitario Neto en CLP": "1",
         "Cantidad": "2",
         "Precio Total Neto en CLP": "2",
-        "Plazo de entrega": "No especificado"
+        "Plazo de entrega": "No especificado",
+        "Link Imagen": ""
       },
       {
         "Fecha y hora": "28-06-2025 12:24",
@@ -124,7 +127,8 @@ export class QuotationService {
         "Precio Unitario Neto en CLP": "288",
         "Cantidad": "15",
         "Precio Total Neto en CLP": "4320",
-        "Plazo de entrega": "No especificado"
+        "Plazo de entrega": "No especificado",
+        "Link Imagen": ""
       },
       {
         "Fecha y hora": "28-06-2025 12:01",
@@ -138,7 +142,8 @@ export class QuotationService {
         "Precio Unitario Neto en CLP": "595546",
         "Cantidad": "1",
         "Precio Total Neto en CLP": "595546",
-        "Plazo de entrega": "Importación 6 a 8 semanas"
+        "Plazo de entrega": "Importación 6 a 8 semanas",
+        "Link Imagen": ""
       }
     ];
   }

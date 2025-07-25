@@ -28,40 +28,15 @@ export const QuotationCards: React.FC<QuotationCardsProps> = ({ data, onExport }
     return parts[0] || dateStr;
   };
 
-  const generateImageUrl = (quotation: Quotation) => {
-    // Create search terms from component details
-    const searchTerms = [];
-    
-    // Add brand if available and not generic
-    const brand = quotation['Marca del Componente'];
-    if (brand && brand !== 'No aplica' && brand !== 'No especificado') {
-      searchTerms.push(brand);
+  const getImageUrl = (quotation: Quotation) => {
+    // Use the Link Imagen column if available
+    const imageLink = quotation['Link Imagen'];
+    if (imageLink && imageLink.trim() && imageLink !== 'No aplica' && imageLink !== 'No especificado') {
+      return imageLink.trim();
     }
     
-    // Add component type if available
-    const type = quotation['Tipo de Componente'];
-    if (type && type !== 'No aplica' && type !== 'No especificado') {
-      searchTerms.push(type);
-    }
-    
-    // Add model if available and not generic
-    const model = quotation['Modelo del Componente'];
-    if (model && model !== 'No aplica' && model !== 'No especificado' && model.length < 30) {
-      searchTerms.push(model);
-    }
-    
-    // Fallback to description keywords if no specific terms
-    if (searchTerms.length === 0) {
-      const description = quotation['Descripción del Producto - Resumida'];
-      const keywords = description.split(' ').slice(0, 3).join(' ');
-      searchTerms.push(keywords);
-    }
-    
-    // Create search query
-    const query = searchTerms.join(' ').toLowerCase();
-    
-    // Use Unsplash API for high-quality images
-    return `https://source.unsplash.com/400x300/?${encodeURIComponent(query)}&industrial,component,machinery`;
+    // Fallback to a generic component placeholder
+    return null;
   };
 
   const handleImageError = (index: number) => {
@@ -119,9 +94,9 @@ export const QuotationCards: React.FC<QuotationCardsProps> = ({ data, onExport }
               
               {/* Product Image */}
               <div className="w-full h-32 bg-gray-100 rounded-lg overflow-hidden mb-3 relative">
-                {!imageErrors.has(index) ? (
+                {!imageErrors.has(index) && getImageUrl(quotation) ? (
                   <img
-                    src={generateImageUrl(quotation)}
+                    src={getImageUrl(quotation)!}
                     alt={quotation['Descripción del Producto - Resumida']}
                     className="w-full h-full object-cover"
                     onError={() => handleImageError(index)}
