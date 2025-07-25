@@ -289,7 +289,6 @@ export const QuotationDetailModal: React.FC<QuotationDetailModalProps> = ({
                     </div>
                   </div>
                 )}
-                </div>
 
                 {/* PDF Embed */}
                 <div className="w-full h-96 bg-gray-100 rounded-lg overflow-auto">
