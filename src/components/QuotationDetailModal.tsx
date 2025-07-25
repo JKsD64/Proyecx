@@ -13,6 +13,15 @@ export const QuotationDetailModal: React.FC<QuotationDetailModalProps> = ({
   isOpen,
   onClose
 }) => {
+  const [pdfError, setPdfError] = React.useState(false);
+  const [imageError, setImageError] = React.useState(false);
+
+  // Reset errors when quotation changes
+  React.useEffect(() => {
+    setPdfError(false);
+    setImageError(false);
+  }, [quotation]);
+
   if (!isOpen || !quotation) return null;
 
   const formatPrice = (price: string) => {
@@ -43,6 +52,26 @@ export const QuotationDetailModal: React.FC<QuotationDetailModalProps> = ({
     return null;
   };
 
+  const getPDFEmbedUrl = (pdfUrl: string) => {
+    // Try multiple PDF embedding methods
+    const encodedUrl = encodeURIComponent(pdfUrl);
+    
+    // Method 1: Direct PDF with #view=FitH (works for direct PDF links)
+    if (pdfUrl.toLowerCase().endsWith('.pdf')) {
+      return `${pdfUrl}#view=FitH&toolbar=0&navpanes=0`;
+    }
+    
+    // Method 2: Google Drive PDF viewer
+    if (pdfUrl.includes('drive.google.com')) {
+      const fileId = pdfUrl.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1];
+      if (fileId) {
+        return `https://drive.google.com/file/d/${fileId}/preview`;
+      }
+    }
+    
+    // Method 3: Mozilla PDF.js viewer
+    return `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodedUrl}`;
+  };
   const handlePDFView = () => {
     const pdfLink = quotation['Link archivo PDF'];
     if (pdfLink) {
@@ -97,24 +126,19 @@ export const QuotationDetailModal: React.FC<QuotationDetailModalProps> = ({
               {/* Product Image */}
               <div className="mb-6">
                 <div className="w-full h-64 bg-gray-100 rounded-lg overflow-hidden">
-                  {getImageUrl(quotation) ? (
+                  {!imageError && getImageUrl(quotation) ? (
                     <img
                       src={getImageUrl(quotation)!}
                       alt={quotation['Descripción del Producto - Resumida']}
                       className="w-full h-full object-contain"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.style.display = 'none';
-                        target.nextElementSibling?.classList.remove('hidden');
-                      }}
+                      onError={() => setImageError(true)}
                     />
-                  ) : null}
-                  <div className={`w-full h-full flex items-center justify-center text-gray-400 ${getImageUrl(quotation) ? 'hidden' : ''}`}>
+                  ) : (
                     <div className="text-center">
                       <Package className="w-16 h-16 mx-auto mb-2" />
                       <span className="text-sm">Imagen no disponible</span>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
 
@@ -199,20 +223,52 @@ export const QuotationDetailModal: React.FC<QuotationDetailModalProps> = ({
 
                 {/* PDF Embed */}
                 <div className="w-full h-96 bg-gray-100 rounded-lg overflow-hidden">
-                  {quotation['Link archivo PDF'] ? (
+                  {quotation['Link archivo PDF'] && !pdfError ? (
+                    <div className="relative w-full h-full">
                     <iframe
-                      src={`https://docs.google.com/viewer?url=${encodeURIComponent(quotation['Link archivo PDF'])}&embedded=true`}
+                        src={getPDFEmbedUrl(quotation['Link archivo PDF'])}
                       className="w-full h-full border-0"
                       title="Previsualización PDF"
-                      onError={() => {
-                        console.log('Error loading PDF preview');
-                      }}
+                        onLoad={(e) => {
+                          const iframe = e.target as HTMLIFrameElement;
+                          // Check if iframe loaded successfully
+                          try {
+                            if (iframe.contentWindow) {
+                              iframe.contentWindow.addEventListener('error', () => setPdfError(true));
+                            }
+                          } catch (error) {
+                            // Cross-origin restrictions, but iframe might still work
+                            console.log('PDF preview loaded');
+                          }
+                        }}
                     />
+                      {/* Fallback button overlay */}
+                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={handlePDFView}
+                          className="bg-white text-gray-800 px-4 py-2 rounded-md shadow-lg hover:bg-gray-100 transition-colors"
+                        >
+                          <ExternalLink className="w-4 h-4 inline mr-2" />
+                          Ver PDF Completo
+                        </button>
+                      </div>
+                    </div>
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-gray-400">
                       <div className="text-center">
                         <FileText className="w-16 h-16 mx-auto mb-2" />
-                        <span className="text-sm">PDF no disponible</span>
+                        <span className="text-sm mb-4 block">
+                          {quotation['Link archivo PDF'] ? 'Error al cargar vista previa' : 'PDF no disponible'}
+                        </span>
+                        {quotation['Link archivo PDF'] && (
+                          <button
+                            onClick={handlePDFView}
+                            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm"
+                          >
+                            <ExternalLink className="w-4 h-4 inline mr-2" />
+                            Abrir PDF
+                          </button>
+                        )}
                       </div>
                     </div>
                   )}
