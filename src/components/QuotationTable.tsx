@@ -1,14 +1,13 @@
 import React from 'react';
-import { Download, Eye, Calendar, Package, Building, Tag } from 'lucide-react';
+import { Eye, Calendar, Package, Building, Tag } from 'lucide-react';
 import { Quotation } from '../types/quotation';
 import { QuotationDetailModal } from './QuotationDetailModal';
 
 interface QuotationTableProps {
   data: Quotation[];
-  onExport: () => void;
 }
 
-export const QuotationTable: React.FC<QuotationTableProps> = ({ data, onExport }) => {
+export const QuotationTable: React.FC<QuotationTableProps> = ({ data }) => {
   const [selectedQuotation, setSelectedQuotation] = React.useState<Quotation | null>(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
@@ -53,13 +52,6 @@ export const QuotationTable: React.FC<QuotationTableProps> = ({ data, onExport }
         <h2 className="text-lg font-semibold text-gray-800">
           Cotizaciones ({data.length} resultados)
         </h2>
-        <button
-          onClick={onExport}
-          className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
-        >
-          <Download className="w-4 h-4 mr-2" />
-          Exportar CSV
-        </button>
       </div>
 
       <div className="overflow-x-auto">

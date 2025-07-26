@@ -1,14 +1,13 @@
 import React from 'react';
-import { Download, Calendar, Package, Building, Tag, Clock, Hash } from 'lucide-react';
+import { Calendar, Package, Building, Tag, Clock, Hash } from 'lucide-react';
 import { Quotation } from '../types/quotation';
 import { QuotationDetailModal } from './QuotationDetailModal';
 
 interface QuotationCardsProps {
   data: Quotation[];
-  onExport: () => void;
 }
 
-export const QuotationCards: React.FC<QuotationCardsProps> = ({ data, onExport }) => {
+export const QuotationCards: React.FC<QuotationCardsProps> = ({ data }) => {
   const [selectedQuotation, setSelectedQuotation] = React.useState<Quotation | null>(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [imageErrors, setImageErrors] = React.useState<Set<number>>(new Set());
@@ -70,13 +69,6 @@ export const QuotationCards: React.FC<QuotationCardsProps> = ({ data, onExport }
         <h2 className="text-lg font-semibold text-gray-800">
           Cotizaciones ({data.length} resultados)
         </h2>
-        <button
-          onClick={onExport}
-          className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
-        >
-          <Download className="w-4 h-4 mr-2" />
-          Exportar CSV
-        </button>
       </div>
 
       {/* Cards Grid */}

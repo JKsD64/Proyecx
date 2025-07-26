@@ -6,11 +6,12 @@ import { QuotationTable } from './components/QuotationTable';
 import { QuotationCards } from './components/QuotationCards';
 import { ViewToggle } from './components/ViewToggle';
 import { QuotationStats } from './components/QuotationStats';
-import { Quotation, QuotationFilters as Filters } from './types/quotation';
+import { Quotation, QuotationFilters as Filters, SortOptions } from './types/quotation';
 
 function App() {
   const [data, setData] = useState<Quotation[]>([]);
   const [filters, setFilters] = useState<Filters>({});
+  const [sortOptions, setSortOptions] = useState<SortOptions>({ field: 'price', order: 'desc' });
   const [viewMode, setViewMode] = useState<'table' | 'cards'>('cards');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -38,8 +39,9 @@ function App() {
   };
 
   const filteredData = useMemo(() => {
-    return quotationService.filterData(data, filters);
-  }, [data, filters]);
+    const filtered = quotationService.filterData(data, filters);
+    return quotationService.sortData(filtered, sortOptions);
+  }, [data, filters, sortOptions]);
 
   const statistics = useMemo(() => {
     return quotationService.getStatistics(filteredData);
@@ -77,9 +79,9 @@ function App() {
     return quotationService.getUniqueValues(data, 'Diámetro');
   }, [data]);
 
-  const handleExport = () => {
-    quotationService.exportToCSV(filteredData);
-  };
+  const uniqueQuotationTypes = useMemo(() => {
+    return quotationService.getUniqueValues(data, 'Tipo de item');
+  }, [data]);
 
   if (loading) {
     return (
@@ -152,12 +154,15 @@ function App() {
           <QuotationFilters
             filters={filters}
             onFiltersChange={setFilters}
+            sortOptions={sortOptions}
+            onSortChange={setSortOptions}
             data={data}
             uniqueProviders={uniqueProviders}
             uniqueBrands={uniqueBrands}
             uniqueTypes={uniqueTypes}
             uniqueModels={uniqueModels}
             uniqueDiameters={uniqueDiameters}
+            uniqueQuotationTypes={uniqueQuotationTypes}
           />
 
           {/* View Toggle */}
@@ -173,12 +178,10 @@ function App() {
         {viewMode === 'table' ? (
           <QuotationTable
             data={filteredData}
-            onExport={handleExport}
           />
         ) : (
           <QuotationCards
             data={filteredData}
-            onExport={handleExport}
           />
         )}
       </main>

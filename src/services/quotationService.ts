@@ -1,4 +1,4 @@
-import { Quotation, QuotationFilters, QuotationStatistics, TopProvider, PriceRanges } from '../types/quotation';
+import { Quotation, QuotationFilters, QuotationStatistics, TopProvider, PriceRanges, SortOptions } from '../types/quotation';
 
 export class QuotationService {
   private googleSheetsUrl = '/api/google-sheets/spreadsheets/d/e/2PACX-1vTnf4Sm6V9ZWNHbHKDtC10sXRmxtdvO66SMFeIGIGE7SYeUgqbqeod010MNeGV0p3KIVcPOVmhBwpFI/pub?output=csv';
@@ -83,7 +83,8 @@ export class QuotationService {
         "Cantidad": "1",
         "Precio Total Neto en CLP": "0",
         "Plazo de entrega": "30 días",
-        "Link Imagen": ""
+        "Link Imagen": "",
+        "Tipo de item": "Servicio"
       },
       {
         "Fecha y hora": "23-06-2025 23:20",
@@ -98,7 +99,8 @@ export class QuotationService {
         "Cantidad": "1",
         "Precio Total Neto en CLP": "0",
         "Plazo de entrega": "20 días",
-        "Link Imagen": ""
+        "Link Imagen": "",
+        "Tipo de item": "Producto"
       },
       {
         "Fecha y hora": "28-06-2025 11:36",
@@ -113,7 +115,8 @@ export class QuotationService {
         "Cantidad": "2",
         "Precio Total Neto en CLP": "2",
         "Plazo de entrega": "No especificado",
-        "Link Imagen": ""
+        "Link Imagen": "",
+        "Tipo de item": "Servicio"
       },
       {
         "Fecha y hora": "28-06-2025 12:24",
@@ -128,7 +131,8 @@ export class QuotationService {
         "Cantidad": "15",
         "Precio Total Neto en CLP": "4320",
         "Plazo de entrega": "No especificado",
-        "Link Imagen": ""
+        "Link Imagen": "",
+        "Tipo de item": "Producto"
       },
       {
         "Fecha y hora": "28-06-2025 12:01",
@@ -143,7 +147,8 @@ export class QuotationService {
         "Cantidad": "1",
         "Precio Total Neto en CLP": "595546",
         "Plazo de entrega": "Importación 6 a 8 semanas",
-        "Link Imagen": ""
+        "Link Imagen": "",
+        "Tipo de item": "Producto"
       }
     ];
   }
@@ -184,6 +189,7 @@ export class QuotationService {
       if (filters.tipo && row['Tipo de Componente'] !== filters.tipo) return false;
       if (filters.modelo && row['Modelo del Componente'] !== filters.modelo) return false;
       if (filters.diametro && row['Diámetro'] !== filters.diametro) return false;
+      if (filters.tipoCotizacion && row['Tipo de item'] !== filters.tipoCotizacion) return false;
       
       if (filters.year) {
         const dateStr = row['Fecha y hora'];
@@ -197,6 +203,24 @@ export class QuotationService {
       }
 
       return true;
+    });
+  }
+
+  sortData(data: Quotation[], sortOptions: SortOptions): Quotation[] {
+    return [...data].sort((a, b) => {
+      let comparison = 0;
+      
+      if (sortOptions.field === 'price') {
+        const priceA = parseFloat(a['Precio Unitario Neto en CLP']) || 0;
+        const priceB = parseFloat(b['Precio Unitario Neto en CLP']) || 0;
+        comparison = priceA - priceB;
+      } else if (sortOptions.field === 'alphabetical') {
+        const nameA = a['Descripción del Producto - Resumida'].toLowerCase();
+        const nameB = b['Descripción del Producto - Resumida'].toLowerCase();
+        comparison = nameA.localeCompare(nameB);
+      }
+      
+      return sortOptions.order === 'desc' ? -comparison : comparison;
     });
   }
 
