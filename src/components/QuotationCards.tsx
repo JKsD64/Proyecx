@@ -163,7 +163,7 @@ export const QuotationCards: React.FC<QuotationCardsProps> = ({ data }) => {
               {/* Provider Badge */}
               <div className="mt-3 flex items-center text-xs text-gray-600">
                 <Building className="w-3 h-3 mr-1 flex-shrink-0" />
-                <span className="truncate">{quotation['Nombre del Proveedor']}</span>
+                <span className="truncate font-medium">{quotation['Nombre del Proveedor']}</span>
               </div>
 
               {/* Delivery Time */}
