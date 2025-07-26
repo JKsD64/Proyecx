@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Package, Building, Tag, Clock, Hash } from 'lucide-react';
+import { Package, Building, Tag, Clock, Hash, FileText, Ruler } from 'lucide-react';
 import { Quotation } from '../types/quotation';
 import { QuotationDetailModal } from './QuotationDetailModal';
 
@@ -146,9 +146,16 @@ export const QuotationCards: React.FC<QuotationCardsProps> = ({ data }) => {
                 )}
                 
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Plazo de entrega:</span>
+                  <span className="text-gray-600">Diámetro:</span>
                   <span className="font-medium text-right">
-                    {quotation['Plazo de entrega'] || 'No especificado'}
+                    {quotation['Diámetro'] || 'No especificado'}
+                  </span>
+                </div>
+                
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Archivo:</span>
+                  <span className="font-medium text-right truncate ml-2">
+                    {quotation['Nombre del archivo'] || 'No especificado'}
                   </span>
                 </div>
               </div>
@@ -159,10 +166,12 @@ export const QuotationCards: React.FC<QuotationCardsProps> = ({ data }) => {
                 <span className="truncate">{quotation['Nombre del Proveedor']}</span>
               </div>
 
-              {/* Date */}
-              <div className="mt-2 flex items-center text-xs text-gray-500">
-                <Calendar className="w-3 h-3 mr-1" />
-                <span>{formatDate(quotation['Fecha y hora'])}</span>
+              {/* Delivery Time */}
+              <div className="mt-2 flex items-center text-xs text-gray-600">
+                <Clock className="w-3 h-3 mr-1" />
+                <span className="font-medium">
+                  Entrega: {quotation['Plazo de entrega'] || 'No especificado'}
+                </span>
               </div>
 
               {/* Action Button */}

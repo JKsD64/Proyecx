@@ -11,6 +11,7 @@ export interface Quotation {
   "Cantidad": string;
   "Precio Total Neto en CLP": string;
   "Plazo de entrega": string;
+  "Nombre del archivo"?: string;
   "Link archivo PDF"?: string;
   "Link Imagen"?: string;
   "Tipo de item"?: string;

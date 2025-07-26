@@ -84,7 +84,8 @@ export class QuotationService {
         "Precio Total Neto en CLP": "0",
         "Plazo de entrega": "30 días",
         "Link Imagen": "",
-        "Tipo de item": "Servicio"
+        "Tipo de item": "Servicio",
+        "Nombre del archivo": "servicio_traslado_001.pdf"
       },
       {
         "Fecha y hora": "23-06-2025 23:20",
@@ -100,7 +101,8 @@ export class QuotationService {
         "Precio Total Neto en CLP": "0",
         "Plazo de entrega": "20 días",
         "Link Imagen": "",
-        "Tipo de item": "Producto"
+        "Tipo de item": "Producto",
+        "Nombre del archivo": "sistema_refrigeracion_industrial.pdf"
       },
       {
         "Fecha y hora": "28-06-2025 11:36",
@@ -116,7 +118,8 @@ export class QuotationService {
         "Precio Total Neto en CLP": "2",
         "Plazo de entrega": "No especificado",
         "Link Imagen": "",
-        "Tipo de item": "Servicio"
+        "Tipo de item": "Servicio",
+        "Nombre del archivo": "abus_serie83_manual.pdf"
       },
       {
         "Fecha y hora": "28-06-2025 12:24",
@@ -132,7 +135,8 @@ export class QuotationService {
         "Precio Total Neto en CLP": "4320",
         "Plazo de entrega": "No especificado",
         "Link Imagen": "",
-        "Tipo de item": "Producto"
+        "Tipo de item": "Producto",
+        "Nombre del archivo": "abrazadera_caddy_especificaciones.pdf"
       },
       {
         "Fecha y hora": "28-06-2025 12:01",
@@ -148,7 +152,8 @@ export class QuotationService {
         "Precio Total Neto en CLP": "595546",
         "Plazo de entrega": "Importación 6 a 8 semanas",
         "Link Imagen": "",
-        "Tipo de item": "Producto"
+        "Tipo de item": "Producto",
+        "Nombre del archivo": "prominent_bama_datasheet.pdf"
       }
     ];
   }
