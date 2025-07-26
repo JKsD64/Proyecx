@@ -26,6 +26,23 @@ export const QuotationDetailModal: React.FC<QuotationDetailModalProps> = ({
     setRotation(0);
   }, [quotation]);
 
+  // Prevent scroll propagation when modal is open
+  React.useEffect(() => {
+    if (isOpen) {
+      // Disable scroll on body when modal is open
+      document.body.style.overflow = 'hidden';
+      
+      return () => {
+        // Re-enable scroll when modal closes
+        document.body.style.overflow = 'unset';
+      };
+    }
+  }, [isOpen]);
+
+  // Handle wheel events to prevent propagation
+  const handleWheel = React.useCallback((e: React.WheelEvent) => {
+    e.stopPropagation();
+  }, []);
   if (!isOpen || !quotation) return null;
 
   const formatPrice = (price: string) => {
@@ -125,7 +142,10 @@ export const QuotationDetailModal: React.FC<QuotationDetailModalProps> = ({
         />
 
         {/* Modal panel */}
-        <div className="inline-block w-full max-w-6xl my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-lg">
+        <div 
+          className="inline-block w-full max-w-6xl my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-lg"
+          onWheel={handleWheel}
+        >
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
             <h3 className="text-lg font-semibold text-gray-900">
@@ -163,7 +183,10 @@ export const QuotationDetailModal: React.FC<QuotationDetailModalProps> = ({
               </div>
 
               {/* Details */}
-              <div className="max-h-80 overflow-y-auto">
+              <div 
+                className="max-h-80 overflow-y-auto"
+                onWheel={handleWheel}
+              >
                 <div className="space-y-0">
                   <DetailRow
                     icon={<Calendar className="w-4 h-4" />}
@@ -291,7 +314,10 @@ export const QuotationDetailModal: React.FC<QuotationDetailModalProps> = ({
                 )}
 
                 {/* PDF Embed */}
-                <div className="w-full h-96 bg-gray-100 rounded-lg overflow-auto">
+                <div 
+                  className="w-full h-96 bg-gray-100 rounded-lg overflow-auto"
+                  onWheel={handleWheel}
+                >
                   {quotation['Link archivo PDF'] && !pdfError ? (
                     <div 
                       className="w-full h-full flex items-center justify-center"
