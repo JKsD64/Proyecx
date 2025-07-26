@@ -1,15 +1,16 @@
 import { Quotation, QuotationFilters, QuotationStatistics, TopProvider, PriceRanges, SortOptions } from '../types/quotation';
 
 export class QuotationService {
-  private googleSheetsUrl = '/api/google-sheets/spreadsheets/d/e/2PACX-1vTnf4Sm6V9ZWNHbHKDtC10sXRmxtdvO66SMFeIGIGE7SYeUgqbqeod010MNeGV0p3KIVcPOVmhBwpFI/pub?output=csv';
+  private googleSheetsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTnf4Sm6V9ZWNHbHKDtC10sXRmxtdvO66SMFeIGIGE7SYeUgqbqeod010MNeGV0p3KIVcPOVmhBwpFI/pub?output=csv';
 
   async loadData(): Promise<Quotation[]> {
     try {
       console.log('Cargando datos desde Google Sheets...');
       const response = await fetch(this.googleSheetsUrl, {
-        mode: 'cors',
+        mode: 'no-cors',
         headers: {
-          'Accept': 'text/csv,text/plain,*/*'
+          'Accept': 'text/csv,text/plain,*/*',
+          'Access-Control-Allow-Origin': '*'
         }
       });
       if (!response.ok) {
