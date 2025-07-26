@@ -1,28 +1,37 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { FileSpreadsheet, RefreshCw, Moon, Sun } from 'lucide-react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { FileSpreadsheet, RefreshCw } from 'lucide-react';
 import { QuotationService } from './services/quotationService';
 import { QuotationFilters } from './components/QuotationFilters';
 import { QuotationTable } from './components/QuotationTable';
 import { QuotationCards } from './components/QuotationCards';
 import { ViewToggle } from './components/ViewToggle';
 import { QuotationStats } from './components/QuotationStats';
+import { Navbar } from './components/Navbar';
+import { Login } from './pages/Login';
+import { Register } from './pages/Register';
+import { ForgotPassword } from './pages/ForgotPassword';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { useAuth } from './hooks/useAuth';
 import { Quotation, QuotationFilters as Filters, SortOptions } from './types/quotation';
 
-function App() {
+// Dashboard component (main quotation analyzer)
+const Dashboard: React.FC<{ darkMode: boolean; toggleDarkMode: () => void }> = ({ 
+  darkMode, 
+  toggleDarkMode 
+}) => {
   const [data, setData] = useState<Quotation[]>([]);
   const [filters, setFilters] = useState<Filters>({});
   const [sortOptions, setSortOptions] = useState<SortOptions>({ field: 'price', order: 'desc' });
   const [viewMode, setViewMode] = useState<'table' | 'cards'>('cards');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [darkMode, setDarkMode] = useState(false);
   const [isEmbedded, setIsEmbedded] = useState(false);
 
   const quotationService = new QuotationService();
 
   useEffect(() => {
     loadData();
-    // Detectar si está en iframe
     setIsEmbedded(window.self !== window.top);
   }, []);
 
@@ -241,21 +250,6 @@ function App() {
     return quotationService.getUniqueValues(baseData, 'Tipo de item');
   }, [filteredDataForFilters, filters.proveedor, filters.marca, filters.tipo, filters.modelo, filters.diametro, filters.year]);
 
-  // Toggle dark mode
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    document.documentElement.classList.toggle('dark');
-  };
-
-  // Apply dark mode class on mount
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [darkMode]);
-
   if (loading) {
     return (
       <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-blue-50 via-white to-purple-50'} flex items-center justify-center`}>
@@ -308,58 +302,18 @@ function App() {
   }
 
   return (
-    <div className={`${isEmbedded ? 'min-h-full' : 'min-h-screen'} transition-colors duration-300 ${
-      darkMode 
-        ? 'bg-gray-900' 
-        : 'bg-gradient-to-br from-blue-50 via-white to-purple-50'
-    }`}>
-      {/* Header */}
-      <header className={`${isEmbedded ? 'relative' : 'sticky top-0'} ${
-        darkMode 
-          ? 'bg-gray-800/95 border-gray-700' 
-          : 'bg-white/95 border-gray-200'
-      } backdrop-blur-sm shadow-lg border-b z-40`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center mr-4 shadow-lg">
-                <FileSpreadsheet className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h1 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                  Analizador de Cotizaciones
-                </h1>
-                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                  Sistema profesional de análisis y gestión
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-3">
-              <button
-                onClick={toggleDarkMode}
-                className={`p-2 rounded-xl transition-all duration-200 ${
-                  darkMode 
-                    ? 'bg-gray-700 text-yellow-400 hover:bg-gray-600' 
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
-                title={darkMode ? 'Modo claro' : 'Modo oscuro'}
-              >
-                {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
-              <button
-                onClick={loadData}
-                className="flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-              >
-                <RefreshCw className="w-4 h-4 mr-2" />
-                Actualizar
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Refresh Button */}
+      <div className="mb-6 flex justify-end">
+        <button
+          onClick={loadData}
+          className="flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+        >
+          <RefreshCw className="w-4 h-4 mr-2" />
+          Actualizar Datos
+        </button>
+      </div>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* KPI Simplificado */}
         <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Total Cotizaciones - KPI Principal */}
@@ -502,26 +456,125 @@ function App() {
             data={filteredData}
           />
         )}
-      </main>
+    </main>
+  );
+};
 
-      {/* Footer */}
-      {!isEmbedded && <footer className={`${
-        darkMode 
-          ? 'bg-gray-800/95 border-gray-700' 
-          : 'bg-white/95 border-gray-200'
-      } backdrop-blur-sm border-t mt-12`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className={`text-center text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-            <p className="flex items-center justify-center">
-              <span className="w-2 h-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mr-2"></span>
-              Sistema de Análisis de Cotizaciones - Desarrollado con React y TypeScript
-            </p>
-            <p className="mt-1">
-              Mostrando <span className="font-semibold">{filteredData.length.toLocaleString()}</span> de <span className="font-semibold">{data.length.toLocaleString()}</span> cotizaciones
-            </p>
-          </div>
-        </div>
-      </footer>}
+// Placeholder components for other routes
+const PlaceholderPage: React.FC<{ title: string; darkMode: boolean }> = ({ title, darkMode }) => (
+  <div className={`min-h-screen ${
+    darkMode 
+      ? 'bg-gray-900' 
+      : 'bg-gradient-to-br from-blue-50 via-white to-purple-50'
+  } flex items-center justify-center`}>
+    <div className={`${
+      darkMode 
+        ? 'bg-gray-800/50 border-gray-700' 
+        : 'bg-white/80 border-gray-200'
+    } backdrop-blur-sm rounded-2xl shadow-xl border p-8 text-center max-w-md`}>
+      <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+        <FileSpreadsheet className="w-8 h-8 text-white" />
+      </div>
+      <h1 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} mb-4`}>
+        {title}
+      </h1>
+      <p className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+        Esta página está en desarrollo. Próximamente estará disponible.
+      </p>
+    </div>
+  </div>
+);
+
+function App() {
+  const { user, loading } = useAuth();
+  const [darkMode, setDarkMode] = useState(false);
+
+  // Toggle dark mode
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+    document.documentElement.classList.toggle('dark');
+  };
+
+  // Apply dark mode class on mount
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
+
+  return (
+    <div className={`min-h-screen transition-colors duration-300 ${
+      darkMode 
+        ? 'bg-gray-900' 
+        : 'bg-gradient-to-br from-blue-50 via-white to-purple-50'
+    }`}>
+      <Routes>
+        {/* Public routes */}
+        <Route 
+          path="/login" 
+          element={
+            user ? <Navigate to="/" replace /> : <Login darkMode={darkMode} />
+          } 
+        />
+        <Route 
+          path="/register" 
+          element={
+            user ? <Navigate to="/" replace /> : <Register darkMode={darkMode} />
+          } 
+        />
+        <Route 
+          path="/forgot-password" 
+          element={
+            user ? <Navigate to="/" replace /> : <ForgotPassword darkMode={darkMode} />
+          } 
+        />
+        
+        {/* Protected routes */}
+        <Route 
+          path="/*" 
+          element={
+            <ProtectedRoute user={user} loading={loading} darkMode={darkMode}>
+              <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} user={user} />
+              <Routes>
+                <Route 
+                  path="/" 
+                  element={<Dashboard darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} 
+                />
+                <Route 
+                  path="/planillas" 
+                  element={<PlaceholderPage title="Planillas de Registro" darkMode={darkMode} />} 
+                />
+                <Route 
+                  path="/bases-de-datos/cotizaciones" 
+                  element={<Dashboard darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} 
+                />
+                <Route 
+                  path="/bases-de-datos/proveedores" 
+                  element={<PlaceholderPage title="Base de Datos - Proveedores" darkMode={darkMode} />} 
+                />
+                <Route 
+                  path="/bases-de-datos/productos" 
+                  element={<PlaceholderPage title="Base de Datos - Productos" darkMode={darkMode} />} 
+                />
+                <Route 
+                  path="/dashboards/general" 
+                  element={<PlaceholderPage title="Dashboard General" darkMode={darkMode} />} 
+                />
+                <Route 
+                  path="/dashboards/rendimiento" 
+                  element={<PlaceholderPage title="Dashboard de Rendimiento" darkMode={darkMode} />} 
+                />
+                <Route 
+                  path="/dashboards/comparativo" 
+                  element={<PlaceholderPage title="Análisis Comparativo" darkMode={darkMode} />} 
+                />
+              </Routes>
+            </ProtectedRoute>
+          } 
+        />
+      </Routes>
     </div>
   );
 }
