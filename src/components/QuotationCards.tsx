@@ -79,12 +79,12 @@ export const QuotationCards: React.FC<QuotationCardsProps> = ({ data }) => {
             <div className="relative p-4 pb-2">
               <div className="absolute top-3 right-3 z-10">
                 <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                  quotation['Tipo de item'] === 'Producto' 
+                  quotation['Tipo de item'] === 'Producto' || !quotation['Tipo de item'] || quotation['Tipo de item'] === 'Componente'
                     ? 'bg-blue-100 text-blue-800' 
                     : 'bg-green-100 text-green-800'
                 }`}>
                   <Package className="w-3 h-3 mr-1" />
-                  {quotation['Tipo de item'] === 'Producto' ? 'COMPONENTE' : 'SERVICIO'}
+                  {quotation['Tipo de item'] === 'Producto' || !quotation['Tipo de item'] || quotation['Tipo de item'] === 'Componente' ? 'COMPONENTE' : 'SERVICIO'}
                 </span>
               </div>
               
