@@ -12,7 +12,6 @@ export default defineConfig({
         rewrite: (path) => ''
       }
     }
-  }
   },
   optimizeDeps: {
     exclude: ['lucide-react'],
