@@ -228,6 +228,7 @@ export const QuotationCards: React.FC<QuotationCardsProps> = ({ darkMode, data }
         quotation={selectedQuotation}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
+        darkMode={darkMode}
       />
     </div>
   );

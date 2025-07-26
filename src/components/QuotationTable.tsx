@@ -238,6 +238,7 @@ export const QuotationTable: React.FC<QuotationTableProps> = ({ darkMode, data }
         quotation={selectedQuotation}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
+        darkMode={darkMode}
       />
     </div>
   );

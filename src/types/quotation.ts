@@ -50,3 +50,10 @@ export interface TopProvider {
 export interface PriceRanges {
   [key: string]: number;
 }
+
+export interface QuotationDetailModalProps {
+  quotation: Quotation | null;
+  isOpen: boolean;
+  onClose: () => void;
+  darkMode?: boolean;
+}
