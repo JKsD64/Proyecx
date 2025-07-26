@@ -128,14 +128,14 @@ export const QuotationDetailModal: React.FC<QuotationDetailModalProps> = ({
   const DetailRow: React.FC<{ icon: React.ReactNode; label: string; value: string }> = ({
     icon, label, value
   }) => (
-    <div className="flex items-start py-0.5 border-b border-gray-100 last:border-b-0">
-      <div className="flex items-center mr-2 mt-0.5">
+    <div className="flex items-start py-0 border-b border-gray-100 last:border-b-0">
+      <div className="flex items-center mr-1 mt-0">
         <div className="text-gray-500">
           {icon}
         </div>
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-xs font-medium text-gray-600 mb-0.5">{label}:</div>
+        <div className="text-xs font-medium text-gray-600">{label}:</div>
         <div className="text-xs text-gray-900 break-words">{value || 'No especificado'}</div>
       </div>
     </div>
@@ -324,11 +324,11 @@ export const QuotationDetailModal: React.FC<QuotationDetailModalProps> = ({
             </div>
 
             {/* Right Side - Information Summary */}
-            <div className="flex-1 border-l border-gray-200 flex flex-col">
-              <div className="px-6 py-4 flex-1 flex flex-col">
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="text-sm font-semibold text-gray-900 flex items-center">
-                    <Package className="w-6 h-6 mr-2" />
+            <div className="flex-1 border-l border-gray-200 flex flex-col overflow-hidden">
+              <div className="px-3 py-2 flex-1 flex flex-col min-h-0">
+                <div className="flex items-center justify-between mb-1">
+                  <h4 className="text-xs font-semibold text-gray-900 flex items-center">
+                    <Package className="w-3 h-3 mr-1" />
                     Resumen de Cotización
                   </h4>
                 </div>
@@ -336,45 +336,45 @@ export const QuotationDetailModal: React.FC<QuotationDetailModalProps> = ({
                 {/* Information Summary */}
                 <div 
                   ref={detailsRef}
-                  className="flex-1 overflow-y-auto space-y-2 pr-2"
+                  className="flex-1 overflow-y-auto space-y-1 pr-1 min-h-0"
                   style={{
-                    scrollbarWidth: 'thin',
-                    scrollbarColor: '#cbd5e1 #f1f5f9'
+                    scrollbarWidth: 'auto',
+                    scrollbarColor: '#9ca3af #f3f4f6'
                   }}
                   onWheel={(e) => e.stopPropagation()}
                 >
                   {/* Product Title */}
-                  <div className="p-2 bg-blue-50 rounded-md border-l-2 border-blue-500">
-                    <h5 className="text-xs font-semibold text-gray-900 mb-1">
+                  <div className="p-1 bg-blue-50 rounded border-l border-blue-500">
+                    <h5 className="text-xs font-medium text-gray-900 mb-0.5">
                       {quotation['Descripción del Producto - Resumida']}
                     </h5>
-                    <div className="flex items-center space-x-2 text-xs text-gray-600">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                    <div className="flex items-center space-x-1 text-xs text-gray-600">
+                      <span className={`inline-flex items-center px-1 py-0.5 rounded text-xs font-medium ${
                         quotation['Tipo de item'] === 'Servicio'
                           ? 'bg-green-100 text-green-800' 
                           : 'bg-blue-100 text-blue-800'
                       }`}>
-                        <Package className="w-2 h-2 mr-1" />
+                        <Package className="w-2 h-2 mr-0.5" />
                         {quotation['Tipo de item'] === 'Servicio' ? 'SERVICIO' : 'COMPONENTE'}
                       </span>
-                      <span className="text-gray-500">
+                      <span className="text-xs text-gray-500">
                         Fecha: {formatDate(quotation['Fecha y hora'])}
                       </span>
                     </div>
                   </div>
 
                   {/* Price Section */}
-                  <div className="p-2 bg-green-50 rounded-md border-l-2 border-green-500">
+                  <div className="p-1 bg-green-50 rounded border-l border-green-500">
                     <div className="flex justify-between items-center">
                       <div>
-                        <div className="text-xs text-gray-600 mb-0.5">Precio Unitario</div>
-                        <div className="text-sm font-bold text-green-600">
+                        <div className="text-xs text-gray-600">Precio Unitario</div>
+                        <div className="text-xs font-bold text-green-600">
                           {formatPrice(quotation['Precio Unitario Neto en CLP'])}
                         </div>
                       </div>
                       {quotation['Cantidad'] && quotation['Cantidad'] !== '1' && (
                         <div className="text-right">
-                          <div className="text-xs text-gray-600">Cantidad: {quotation['Cantidad']}</div>
+                          <div className="text-xs text-gray-600">Cant: {quotation['Cantidad']}</div>
                           <div className="text-xs font-semibold text-gray-800">
                             Total: {formatPrice(quotation['Precio Total Neto en CLP'])}
                           </div>
@@ -384,21 +384,21 @@ export const QuotationDetailModal: React.FC<QuotationDetailModalProps> = ({
                   </div>
                   
                   {/* Details Grid */}
-                  <div className="space-y-2">
+                  <div className="space-y-1">
                     {/* Provider Section */}
-                    <div className="bg-white p-2 rounded-md border border-gray-200">
-                      <h6 className="text-xs font-semibold text-gray-700 mb-2 flex items-center">
-                        <Building className="w-3 h-3 mr-1" />
+                    <div className="bg-white p-1 rounded border border-gray-200">
+                      <h6 className="text-xs font-medium text-gray-700 mb-1 flex items-center">
+                        <Building className="w-2 h-2 mr-0.5" />
                         Información del Proveedor
                       </h6>
-                      <div className="space-y-0.5">
+                      <div className="space-y-0">
                         <DetailRow
-                          icon={<Building className="w-3 h-3" />}
+                          icon={<Building className="w-2 h-2" />}
                           label="Proveedor"
                           value={quotation['Nombre del Proveedor']}
                         />
                         <DetailRow
-                          icon={<Clock className="w-3 h-3" />}
+                          icon={<Clock className="w-2 h-2" />}
                           label="Plazo de Entrega"
                           value={quotation['Plazo de entrega']}
                         />
@@ -406,34 +406,34 @@ export const QuotationDetailModal: React.FC<QuotationDetailModalProps> = ({
                     </div>
 
                     {/* Product Details Section */}
-                    <div className="bg-white p-2 rounded-md border border-gray-200">
-                      <h6 className="text-xs font-semibold text-gray-700 mb-2 flex items-center">
-                        <Package className="w-3 h-3 mr-1" />
+                    <div className="bg-white p-1 rounded border border-gray-200">
+                      <h6 className="text-xs font-medium text-gray-700 mb-1 flex items-center">
+                        <Package className="w-2 h-2 mr-0.5" />
                         Especificaciones del Producto
                       </h6>
-                      <div className="space-y-0.5">
+                      <div className="space-y-0">
                         <DetailRow
-                          icon={<Tag className="w-3 h-3" />}
+                          icon={<Tag className="w-2 h-2" />}
                           label="Marca"
                           value={quotation['Marca del Componente']}
                         />
                         <DetailRow
-                          icon={<Package className="w-3 h-3" />}
+                          icon={<Package className="w-2 h-2" />}
                           label="Modelo"
                           value={quotation['Modelo del Componente']}
                         />
                         <DetailRow
-                          icon={<Wrench className="w-3 h-3" />}
+                          icon={<Wrench className="w-2 h-2" />}
                           label="Tipo de Componente"
                           value={quotation['Tipo de Componente']}
                         />
                         <DetailRow
-                          icon={<Package className="w-3 h-3" />}
+                          icon={<Package className="w-2 h-2" />}
                           label="Material"
                           value={quotation['Material']}
                         />
                         <DetailRow
-                          icon={<Ruler className="w-3 h-3" />}
+                          icon={<Ruler className="w-2 h-2" />}
                           label="Diámetro"
                           value={quotation['Diámetro']}
                         />
@@ -441,25 +441,25 @@ export const QuotationDetailModal: React.FC<QuotationDetailModalProps> = ({
                     </div>
 
                     {/* Files Section */}
-                    <div className="bg-white p-2 rounded-md border border-gray-200">
-                      <h6 className="text-xs font-semibold text-gray-700 mb-2 flex items-center">
-                        <FileText className="w-3 h-3 mr-1" />
+                    <div className="bg-white p-1 rounded border border-gray-200">
+                      <h6 className="text-xs font-medium text-gray-700 mb-1 flex items-center">
+                        <FileText className="w-2 h-2 mr-0.5" />
                         Archivos y Documentos
                       </h6>
-                      <div className="space-y-0.5">
+                      <div className="space-y-0">
                         <DetailRow
-                          icon={<FileText className="w-3 h-3" />}
+                          icon={<FileText className="w-2 h-2" />}
                           label="Nombre del Archivo"
                           value={quotation['Nombre del archivo']}
                         />
                         {quotation['Link archivo PDF'] && (
-                          <div className="flex items-center justify-between py-0.5">
+                          <div className="flex items-center justify-between py-0">
                             <span className="text-xs font-medium text-gray-600">PDF de Cotización:</span>
                             <button
                               onClick={handlePDFView}
-                              className="flex items-center px-1.5 py-0.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 transition-colors"
+                              className="flex items-center px-1 py-0.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 transition-colors"
                             >
-                              <ExternalLink className="w-2 h-2 mr-1" />
+                              <ExternalLink className="w-2 h-2 mr-0.5" />
                               Abrir PDF
                             </button>
                           </div>
@@ -473,11 +473,11 @@ export const QuotationDetailModal: React.FC<QuotationDetailModalProps> = ({
           </div>
 
           {/* Footer */}
-          <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex-shrink-0">
+          <div className="px-3 py-2 border-t border-gray-200 bg-gray-50 flex-shrink-0">
             <div className="flex justify-end">
               <button
                 onClick={onClose}
-                className="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
+                className="px-3 py-1 text-xs text-gray-700 bg-gray-200 rounded hover:bg-gray-300 transition-colors"
               >
                 Cerrar
               </button>
