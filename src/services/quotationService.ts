@@ -1,7 +1,9 @@
 import { Quotation, QuotationFilters, QuotationStatistics, TopProvider, PriceRanges, SortOptions } from '../types/quotation';
 
 export class QuotationService {
-  private googleSheetsUrl = '/.netlify/functions/google-sheets';
+  private googleSheetsUrl = import.meta.env.PROD 
+    ? '/.netlify/functions/google-sheets'
+    : 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTnf4Sm6V9ZWNHbHKDtC10sXRmxtdvO66SMFeIGIGE7SYeUgqbqeod010MNeGV0p3KIVcPOVmhBwpFI/pub?output=csv';
 
   async loadData(): Promise<Quotation[]> {
     try {
