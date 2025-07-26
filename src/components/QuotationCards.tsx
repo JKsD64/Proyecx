@@ -162,13 +162,13 @@ export const QuotationCards: React.FC<QuotationCardsProps> = ({ data }) => {
 
               {/* Provider Badge */}
               <div className="mt-3 flex items-center text-xs text-gray-600">
-                <Building className="w-3 h-3 mr-1" />
+                <Building className="w-3 h-3 mr-1 flex-shrink-0" />
                 <span className="truncate">{quotation['Nombre del Proveedor']}</span>
               </div>
 
               {/* Delivery Time */}
               <div className="mt-2 flex items-center text-xs text-gray-600">
-                <Clock className="w-3 h-3 mr-1" />
+                <Clock className="w-3 h-3 mr-1 flex-shrink-0" />
                 <span className="font-medium">
                   Entrega: {quotation['Plazo de entrega'] || 'No especificado'}
                 </span>
