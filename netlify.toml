@@ -1,6 +1,7 @@
 [build]
   publish = "dist"
   command = "npm run build"
+  functions = "netlify/functions"
 
 [[headers]]
   for = "/*"
@@ -9,13 +10,6 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-
-[[redirects]]
-  from = "/api/google-sheets/*"
-  to = "https://docs.google.com/:splat"
-  status = 200
-  force = true
-  headers = {Access-Control-Allow-Origin = "*"}
 
 [[redirects]]
   from = "/*"

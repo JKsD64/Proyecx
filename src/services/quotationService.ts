@@ -1,17 +1,19 @@
 import { Quotation, QuotationFilters, QuotationStatistics, TopProvider, PriceRanges, SortOptions } from '../types/quotation';
 
 export class QuotationService {
-  private googleSheetsUrl = '/api/google-sheets';
+  private googleSheetsUrl = '/.netlify/functions/google-sheets';
 
   async loadData(): Promise<Quotation[]> {
     try {
       console.log('Cargando datos desde Google Sheets...');
       const response = await fetch(this.googleSheetsUrl);
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
         throw new Error(`No se pudo cargar el archivo CSV: ${response.status} ${response.statusText}`);
       }
       const csvText = await response.text();
-      console.log('Datos cargados exitosamente, procesando CSV...');
+      console.log(`Datos cargados exitosamente: ${csvText.length} caracteres, procesando CSV...`);
       return this.parseCSV(csvText);
     } catch (error) {
       console.error('Error al cargar datos desde Google Sheets:', error);

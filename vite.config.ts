@@ -6,10 +6,10 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api/google-sheets': {
-        target: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTnf4Sm6V9ZWNHbHKDtC10sXRmxtdvO66SMFeIGIGE7SYeUgqbqeod010MNeGV0p3KIVcPOVmhBwpFI/pub?output=csv',
+      '/.netlify/functions/google-sheets': {
+        target: 'http://localhost:8888',
         changeOrigin: true,
-        rewrite: (path) => ''
+        rewrite: (path) => path.replace('/.netlify/functions', '/.netlify/functions')
       }
     }
   },
