@@ -13,15 +13,6 @@ export default defineConfig({
       }
     }
   }
-  server: {
-    proxy: {
-      '/api/google-sheets': {
-        target: 'https://docs.google.com',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/google-sheets/, ''),
-        secure: true
-      }
-    }
   },
   optimizeDeps: {
     exclude: ['lucide-react'],
