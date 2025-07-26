@@ -1,16 +1,31 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key';
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables');
-}
+// Create client with fallback for development
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true
+  }
+});
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Check if Supabase is properly configured
+export const isSupabaseConfigured = () => {
+  return supabaseUrl !== 'https://placeholder.supabase.co' && 
+         supabaseAnonKey !== 'placeholder-key' &&
+         supabaseUrl && 
+         supabaseAnonKey;
+};
 
 // Auth helper functions
 export const signInWithEmail = async (email: string, password: string) => {
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase no está configurado. Por favor configura las variables de entorno.');
+  }
+  
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
@@ -19,6 +34,10 @@ export const signInWithEmail = async (email: string, password: string) => {
 };
 
 export const signUpWithEmail = async (email: string, password: string) => {
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase no está configurado. Por favor configura las variables de entorno.');
+  }
+  
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -27,6 +46,10 @@ export const signUpWithEmail = async (email: string, password: string) => {
 };
 
 export const signInWithGoogle = async () => {
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase no está configurado. Por favor configura las variables de entorno.');
+  }
+  
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
@@ -37,11 +60,19 @@ export const signInWithGoogle = async () => {
 };
 
 export const signOut = async () => {
+  if (!isSupabaseConfigured()) {
+    return { error: null };
+  }
+  
   const { error } = await supabase.auth.signOut();
   return { error };
 };
 
 export const resetPassword = async (email: string) => {
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase no está configurado. Por favor configura las variables de entorno.');
+  }
+  
   const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${window.location.origin}/reset-password`,
   });

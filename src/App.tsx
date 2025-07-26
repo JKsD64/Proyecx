@@ -13,6 +13,7 @@ import { Register } from './pages/Register';
 import { ForgotPassword } from './pages/ForgotPassword';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { useAuth } from './hooks/useAuth';
+import { isSupabaseConfigured } from './lib/supabase';
 import { Quotation, QuotationFilters as Filters, SortOptions } from './types/quotation';
 
 // Dashboard component (main quotation analyzer)
@@ -32,7 +33,13 @@ const Dashboard: React.FC<{ darkMode: boolean; toggleDarkMode: () => void }> = (
 
   useEffect(() => {
     loadData();
-    setIsEmbedded(window.self !== window.top);
+    // Check if running in iframe (embedded)
+    try {
+      setIsEmbedded(window.self !== window.top);
+    } catch (e) {
+      // If we can't access window.top due to cross-origin restrictions, assume embedded
+      setIsEmbedded(true);
+    }
   }, []);
 
   const loadData = async () => {
@@ -302,9 +309,14 @@ const Dashboard: React.FC<{ darkMode: boolean; toggleDarkMode: () => void }> = (
   }
 
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 ${isEmbedded ? 'pb-20' : ''}`}>
       {/* Refresh Button */}
-      <div className="mb-6 flex justify-end">
+      <div className={`mb-6 flex justify-end ${!isSupabaseConfigured() ? 'mt-12' : ''}`}>
+        {!isSupabaseConfigured() && (
+          <div className="mr-4 px-4 py-2 bg-yellow-100 border border-yellow-300 rounded-xl text-yellow-800 text-sm">
+            ⚠️ Modo demo - Supabase no configurado
+          </div>
+        )}
         <button
           onClick={loadData}
           className="flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
@@ -515,19 +527,19 @@ function App() {
         <Route 
           path="/login" 
           element={
-            user ? <Navigate to="/" replace /> : <Login darkMode={darkMode} />
+            (user || !isSupabaseConfigured()) ? <Navigate to="/" replace /> : <Login darkMode={darkMode} />
           } 
         />
         <Route 
           path="/register" 
           element={
-            user ? <Navigate to="/" replace /> : <Register darkMode={darkMode} />
+            (user || !isSupabaseConfigured()) ? <Navigate to="/" replace /> : <Register darkMode={darkMode} />
           } 
         />
         <Route 
           path="/forgot-password" 
           element={
-            user ? <Navigate to="/" replace /> : <ForgotPassword darkMode={darkMode} />
+            (user || !isSupabaseConfigured()) ? <Navigate to="/" replace /> : <ForgotPassword darkMode={darkMode} />
           } 
         />
         

@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { User } from '@supabase/supabase-js';
 import { Loader2 } from 'lucide-react';
+import { isSupabaseConfigured } from '../lib/supabase';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -38,6 +39,11 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
         </div>
       </div>
     );
+  }
+
+  // If Supabase is not configured, allow access without authentication
+  if (!isSupabaseConfigured()) {
+    return <>{children}</>;
   }
 
   if (!user) {

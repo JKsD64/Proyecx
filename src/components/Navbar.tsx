@@ -10,7 +10,7 @@ import {
   Menu,
   X
 } from 'lucide-react';
-import { supabase, signOut } from '../lib/supabase';
+import { supabase, signOut, isSupabaseConfigured } from '../lib/supabase';
 import { User as SupabaseUser } from '@supabase/supabase-js';
 
 interface NavbarProps {
@@ -221,7 +221,7 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode, user }
             </button>
 
             {/* User authentication */}
-            {user ? (
+            {user && isSupabaseConfigured() ? (
               <div className="flex items-center space-x-3">
                 <span className={`hidden sm:block text-sm font-medium ${
                   darkMode ? 'text-gray-300' : 'text-gray-700'
@@ -237,7 +237,7 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode, user }
                   <span className="hidden sm:inline">Cerrar Sesión</span>
                 </button>
               </div>
-            ) : (
+            ) : isSupabaseConfigured() ? (
               <Link
                 to="/login"
                 className="flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
@@ -245,6 +245,10 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode, user }
                 <User className="w-4 h-4 mr-2" />
                 <span className="hidden sm:inline">Iniciar Sesión</span>
               </Link>
+            ) : (
+              <div className="px-3 py-2 bg-yellow-100 border border-yellow-300 rounded-xl text-yellow-800 text-xs">
+                Modo Demo
+              </div>
             )}
 
             {/* Mobile menu button */}
