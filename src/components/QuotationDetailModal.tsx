@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Calendar, Building, Tag, Package, Wrench, Ruler, Clock, FileText, ExternalLink, ZoomIn, ZoomOut, RotateCw, Maximize2 } from 'lucide-react';
+import { X, Calendar, Building, Tag, Package, Wrench, Ruler, Clock, FileText, ExternalLink, ZoomIn, ZoomOut, RotateCw, Maximize2, Image, FileText as FileIcon } from 'lucide-react';
 import { Quotation } from '../types/quotation';
 
 interface QuotationDetailModalProps {
@@ -17,6 +17,7 @@ export const QuotationDetailModal: React.FC<QuotationDetailModalProps> = ({
   const [imageError, setImageError] = React.useState(false);
   const [zoomLevel, setZoomLevel] = React.useState(100);
   const [rotation, setRotation] = React.useState(0);
+  const [leftViewMode, setLeftViewMode] = React.useState<'image' | 'pdf'>('image');
 
   const detailsRef = React.useRef<HTMLDivElement>(null);
 
@@ -26,6 +27,7 @@ export const QuotationDetailModal: React.FC<QuotationDetailModalProps> = ({
     setImageError(false);
     setZoomLevel(100);
     setRotation(0);
+    setLeftViewMode('image');
   }, [quotation]);
 
   // Redirect all scroll events to modal details when modal is open
@@ -152,9 +154,37 @@ export const QuotationDetailModal: React.FC<QuotationDetailModalProps> = ({
         <div className="inline-block w-full max-w-[95vw] h-[95vh] my-4 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-lg flex flex-col">
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">
-              Detalles de la Cotización
-            </h3>
+            <div className="flex items-center justify-between w-full">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Detalles de la Cotización
+              </h3>
+              
+              {/* View Toggle Buttons */}
+              <div className="flex items-center bg-gray-100 rounded-lg p-1">
+                <button
+                  onClick={() => setLeftViewMode('image')}
+                  className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    leftViewMode === 'image'
+                      ? 'bg-white text-blue-600 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  <Image className="w-4 h-4 mr-2" />
+                  Imagen
+                </button>
+                <button
+                  onClick={() => setLeftViewMode('pdf')}
+                  className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    leftViewMode === 'pdf'
+                      ? 'bg-white text-blue-600 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  <FileIcon className="w-4 h-4 mr-2" />
+                  PDF
+                </button>
+              </div>
+            </div>
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -165,224 +195,274 @@ export const QuotationDetailModal: React.FC<QuotationDetailModalProps> = ({
 
           {/* Main Content */}
           <div className="flex flex-1 overflow-hidden">
-            {/* Left Side - Image and Details */}
+            {/* Left Side - Image or PDF */}
             <div className="flex-1 px-6 py-4 flex flex-col overflow-hidden">
-              {/* Product Image */}
-              <div className="mb-6">
-                <div className="w-full h-48 lg:h-64 xl:h-80 bg-gray-100 rounded-lg overflow-hidden">
+              {leftViewMode === 'image' ? (
+                /* Product Image View */
+                <div className="w-full h-full bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
                   {!imageError && getImageUrl(quotation) ? (
                     <img
                       src={getImageUrl(quotation)!}
                       alt={quotation['Descripción del Producto - Resumida']}
-                      className="w-full h-full object-contain"
+                      className="max-w-full max-h-full object-contain"
                       onError={() => setImageError(true)}
                     />
                   ) : (
-                    <div className="text-center">
-                      <Package className="w-16 h-16 mx-auto mb-2" />
-                      <span className="text-sm">Imagen no disponible</span>
+                    <div className="text-center text-gray-400">
+                      <Package className="w-24 h-24 mx-auto mb-4" />
+                      <span className="text-lg">Imagen no disponible</span>
                     </div>
                   )}
                 </div>
-              </div>
-
-              {/* Details */}
-              <div 
-                ref={detailsRef}
-                className="flex-1 overflow-y-auto"
-              >
-                <div className="space-y-0">
-                  <DetailRow
-                    icon={<Calendar className="w-4 h-4" />}
-                    label="Fecha"
-                    value={formatDate(quotation['Fecha y hora'])}
-                  />
-                  
-                  <DetailRow
-                    icon={<Building className="w-4 h-4" />}
-                    label="Proveedor"
-                    value={quotation['Nombre del Proveedor']}
-                  />
-                  
-                  <DetailRow
-                    icon={<Tag className="w-4 h-4" />}
-                    label="Marca"
-                    value={quotation['Marca del Componente']}
-                  />
-                  
-                  <DetailRow
-                    icon={<Package className="w-4 h-4" />}
-                    label="Modelo"
-                    value={quotation['Modelo del Componente']}
-                  />
-                  
-                  <DetailRow
-                    icon={<Wrench className="w-4 h-4" />}
-                    label="Tipo Componente"
-                    value={quotation['Tipo de Componente']}
-                  />
-                  
-                  <DetailRow
-                    icon={<Package className="w-4 h-4" />}
-                    label="Material"
-                    value={quotation['Material']}
-                  />
-                  
-                  <DetailRow
-                    icon={<Ruler className="w-4 h-4" />}
-                    label="Diámetro"
-                    value={quotation['Diámetro']}
-                  />
-                  
-                  <DetailRow
-                    icon={<Clock className="w-4 h-4" />}
-                    label="Plazo Entrega"
-                    value={quotation['Plazo de entrega']}
-                  />
-                  
-                  <DetailRow
-                    icon={<FileText className="w-4 h-4" />}
-                    label="Descripción Original"
-                    value={quotation['Descripción del Producto - Resumida']}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Right Side - PDF Preview */}
-            <div className="flex-1 border-l border-gray-200 flex flex-col">
-              <div className="px-6 py-4 flex-1 flex flex-col">
-                <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-lg font-medium text-gray-900 flex items-center">
-                    <FileText className="w-5 h-5 mr-2" />
-                    Previsualización PDF
-                  </h4>
-                  <div className="flex items-center space-x-2">
-                    {quotation['Link archivo PDF'] && (
-                      <button
-                        onClick={handlePDFView}
-                        className="flex items-center px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
-                      >
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        Abrir PDF
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                {/* PDF Controls */}
-                {quotation['Link archivo PDF'] && !pdfError && (
-                  <div className="flex items-center justify-between mb-3 p-2 bg-gray-100 rounded-lg">
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={handleZoomOut}
-                        disabled={zoomLevel <= 50}
-                        className="p-1 text-gray-600 hover:text-gray-800 disabled:text-gray-400 disabled:cursor-not-allowed"
-                        title="Reducir zoom"
-                      >
-                        <ZoomOut className="w-4 h-4" />
-                      </button>
-                      
-                      <span className="text-sm font-medium text-gray-700 min-w-[60px] text-center">
-                        {zoomLevel}%
-                      </span>
-                      
-                      <button
-                        onClick={handleZoomIn}
-                        disabled={zoomLevel >= 200}
-                        className="p-1 text-gray-600 hover:text-gray-800 disabled:text-gray-400 disabled:cursor-not-allowed"
-                        title="Aumentar zoom"
-                      >
-                        <ZoomIn className="w-4 h-4" />
-                      </button>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={handleRotate}
-                        className="p-1 text-gray-600 hover:text-gray-800"
-                        title="Rotar 90°"
-                      >
-                        <RotateCw className="w-4 h-4" />
-                      </button>
-                      
-                      <button
-                        onClick={handleFitToWidth}
-                        className="p-1 text-gray-600 hover:text-gray-800"
-                        title="Ajustar al ancho"
-                      >
-                        <Maximize2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {/* PDF Embed */}
-                <div 
-                  className="w-full flex-1 bg-gray-100 rounded-lg overflow-auto"
-                >
-                  {quotation['Link archivo PDF'] && !pdfError ? (
-                    <div 
-                      className="w-full h-full flex items-center justify-center"
-                      style={{
-                        transform: `scale(${zoomLevel / 100}) rotate(${rotation}deg)`,
-                        transformOrigin: 'center center',
-                        transition: 'transform 0.3s ease'
-                      }}
-                    >
-                      <iframe
-                        src={getPDFEmbedUrl(quotation['Link archivo PDF'])}
-                        className="w-full h-full border-0"
-                        title="Previsualización PDF"
-                        onLoad={(e) => {
-                          const iframe = e.target as HTMLIFrameElement;
-                          try {
-                            if (iframe.contentWindow) {
-                              iframe.contentWindow.addEventListener('error', () => setPdfError(true));
-                            }
-                          } catch (error) {
-                            console.log('PDF preview loaded');
-                          }
-                        }}
-                      />
-                    </div>
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400">
-                      <div className="text-center">
-                        <FileText className="w-16 h-16 mx-auto mb-2" />
-                        <span className="text-sm mb-4 block">
-                          {quotation['Link archivo PDF'] ? 'Error al cargar vista previa' : 'PDF no disponible'}
+              ) : (
+                /* PDF View */
+                <div className="w-full h-full flex flex-col">
+                  {/* PDF Controls */}
+                  {quotation['Link archivo PDF'] && !pdfError && (
+                    <div className="flex items-center justify-between mb-3 p-2 bg-gray-100 rounded-lg">
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={handleZoomOut}
+                          disabled={zoomLevel <= 50}
+                          className="p-1 text-gray-600 hover:text-gray-800 disabled:text-gray-400 disabled:cursor-not-allowed"
+                          title="Reducir zoom"
+                        >
+                          <ZoomOut className="w-4 h-4" />
+                        </button>
+                        
+                        <span className="text-sm font-medium text-gray-700 min-w-[60px] text-center">
+                          {zoomLevel}%
                         </span>
-                        {quotation['Link archivo PDF'] && (
-                          <button
-                            onClick={handlePDFView}
-                            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm"
-                          >
-                            <ExternalLink className="w-4 h-4 inline mr-2" />
-                            Abrir PDF
-                          </button>
-                        )}
+                        
+                        <button
+                          onClick={handleZoomIn}
+                          disabled={zoomLevel >= 200}
+                          className="p-1 text-gray-600 hover:text-gray-800 disabled:text-gray-400 disabled:cursor-not-allowed"
+                          title="Aumentar zoom"
+                        >
+                          <ZoomIn className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={handleRotate}
+                          className="p-1 text-gray-600 hover:text-gray-800"
+                          title="Rotar 90°"
+                        >
+                          <RotateCw className="w-4 h-4" />
+                        </button>
+                        
+                        <button
+                          onClick={handleFitToWidth}
+                          className="p-1 text-gray-600 hover:text-gray-800"
+                          title="Ajustar al ancho"
+                        >
+                          <Maximize2 className="w-4 h-4" />
+                        </button>
+                        
+                        <button
+                          onClick={handlePDFView}
+                          className="flex items-center px-2 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 transition-colors"
+                        >
+                          <ExternalLink className="w-3 h-3 mr-1" />
+                          Abrir
+                        </button>
                       </div>
                     </div>
                   )}
-                </div>
-              </div>
-            </div>
-          </div>
 
-          {/* Price Section */}
-          <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex-shrink-0">
-            <div className="flex justify-between items-center">
-              <div>
-                <div className="text-sm text-gray-600">Precio Unitario</div>
-                <div className="text-2xl font-bold text-blue-600">
-                  {formatPrice(quotation['Precio Unitario Neto en CLP'])}
-                </div>
-                {quotation['Cantidad'] && quotation['Cantidad'] !== '1' && (
-                  <div className="text-sm text-gray-500">
-                    Cantidad: {quotation['Cantidad']} | Total: {formatPrice(quotation['Precio Total Neto en CLP'])}
+                  {/* PDF Embed */}
+                  <div className="w-full flex-1 bg-gray-100 rounded-lg overflow-auto">
+                    {quotation['Link archivo PDF'] && !pdfError ? (
+                      <div 
+                        className="w-full h-full flex items-center justify-center"
+                        style={{
+                          transform: `scale(${zoomLevel / 100}) rotate(${rotation}deg)`,
+                          transformOrigin: 'center center',
+                          transition: 'transform 0.3s ease'
+                        }}
+                      >
+                        <iframe
+                          src={getPDFEmbedUrl(quotation['Link archivo PDF'])}
+                          className="w-full h-full border-0"
+                          title="Previsualización PDF"
+                          onLoad={(e) => {
+                            const iframe = e.target as HTMLIFrameElement;
+                            try {
+                              if (iframe.contentWindow) {
+                                iframe.contentWindow.addEventListener('error', () => setPdfError(true));
+                              }
+                            } catch (error) {
+                              console.log('PDF preview loaded');
+                            }
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400">
+                        <div className="text-center">
+                          <FileText className="w-24 h-24 mx-auto mb-4" />
+                          <span className="text-lg mb-4 block">
+                            {quotation['Link archivo PDF'] ? 'Error al cargar vista previa' : 'PDF no disponible'}
+                          </span>
+                          {quotation['Link archivo PDF'] && (
+                            <button
+                              onClick={handlePDFView}
+                              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm"
+                            >
+                              <ExternalLink className="w-4 h-4 inline mr-2" />
+                              Abrir PDF
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
+              )}
+            </div>
+
+            {/* Right Side - Information Summary */}
+            <div className="flex-1 border-l border-gray-200 flex flex-col">
+              <div className="px-6 py-4 flex-1 flex flex-col">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-xl font-semibold text-gray-900 flex items-center">
+                    <Package className="w-6 h-6 mr-2" />
+                    Resumen de Cotización
+                  </h4>
+                </div>
+
+                {/* Information Summary */}
+                <div 
+                  ref={detailsRef}
+                  className="flex-1 overflow-y-auto"
+                >
+                  {/* Product Title */}
+                  <div className="mb-6 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                    <h5 className="text-lg font-semibold text-gray-900 mb-2">
+                      {quotation['Descripción del Producto - Resumida']}
+                    </h5>
+                    <div className="flex items-center space-x-4 text-sm text-gray-600">
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                        quotation['Tipo de item'] === 'Servicio'
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-blue-100 text-blue-800'
+                      }`}>
+                        <Package className="w-3 h-3 mr-1" />
+                        {quotation['Tipo de item'] === 'Servicio' ? 'SERVICIO' : 'COMPONENTE'}
+                      </span>
+                      <span className="text-gray-500">
+                        Fecha: {formatDate(quotation['Fecha y hora'])}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Price Section */}
+                  <div className="mb-6 p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <div className="text-sm text-gray-600 mb-1">Precio Unitario</div>
+                        <div className="text-3xl font-bold text-green-600">
+                          {formatPrice(quotation['Precio Unitario Neto en CLP'])}
+                        </div>
+                      </div>
+                      {quotation['Cantidad'] && quotation['Cantidad'] !== '1' && (
+                        <div className="text-right">
+                          <div className="text-sm text-gray-600">Cantidad: {quotation['Cantidad']}</div>
+                          <div className="text-xl font-semibold text-gray-800">
+                            Total: {formatPrice(quotation['Precio Total Neto en CLP'])}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Details Grid */}
+                  <div className="grid grid-cols-1 gap-4">
+                    {/* Provider Section */}
+                    <div className="bg-white p-4 rounded-lg border border-gray-200">
+                      <h6 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                        <Building className="w-4 h-4 mr-2" />
+                        Información del Proveedor
+                      </h6>
+                      <div className="space-y-2">
+                        <DetailRow
+                          icon={<Building className="w-4 h-4" />}
+                          label="Proveedor"
+                          value={quotation['Nombre del Proveedor']}
+                        />
+                        <DetailRow
+                          icon={<Clock className="w-4 h-4" />}
+                          label="Plazo de Entrega"
+                          value={quotation['Plazo de entrega']}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Product Details Section */}
+                    <div className="bg-white p-4 rounded-lg border border-gray-200">
+                      <h6 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                        <Package className="w-4 h-4 mr-2" />
+                        Especificaciones del Producto
+                      </h6>
+                      <div className="space-y-2">
+                        <DetailRow
+                          icon={<Tag className="w-4 h-4" />}
+                          label="Marca"
+                          value={quotation['Marca del Componente']}
+                        />
+                        <DetailRow
+                          icon={<Package className="w-4 h-4" />}
+                          label="Modelo"
+                          value={quotation['Modelo del Componente']}
+                        />
+                        <DetailRow
+                          icon={<Wrench className="w-4 h-4" />}
+                          label="Tipo de Componente"
+                          value={quotation['Tipo de Componente']}
+                        />
+                        <DetailRow
+                          icon={<Package className="w-4 h-4" />}
+                          label="Material"
+                          value={quotation['Material']}
+                        />
+                        <DetailRow
+                          icon={<Ruler className="w-4 h-4" />}
+                          label="Diámetro"
+                          value={quotation['Diámetro']}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Files Section */}
+                    <div className="bg-white p-4 rounded-lg border border-gray-200">
+                      <h6 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                        <FileText className="w-4 h-4 mr-2" />
+                        Archivos y Documentos
+                      </h6>
+                      <div className="space-y-2">
+                        <DetailRow
+                          icon={<FileText className="w-4 h-4" />}
+                          label="Nombre del Archivo"
+                          value={quotation['Nombre del archivo']}
+                        />
+                        {quotation['Link archivo PDF'] && (
+                          <div className="flex items-center justify-between py-2">
+                            <span className="text-sm font-medium text-gray-600">PDF de Cotización:</span>
+                            <button
+                              onClick={handlePDFView}
+                              className="flex items-center px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition-colors"
+                            >
+                              <ExternalLink className="w-3 h-3 mr-1" />
+                              Abrir PDF
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
