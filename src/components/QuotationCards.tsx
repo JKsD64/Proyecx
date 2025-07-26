@@ -74,13 +74,17 @@ export const QuotationCards: React.FC<QuotationCardsProps> = ({ data }) => {
       {/* Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {data.map((quotation, index) => (
-          <div key={index} className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden">
+          <div key={index} className="bg-white rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 overflow-hidden transform hover:scale-105">
             {/* Card Header with PDF badge */}
             <div className="relative p-4 pb-2">
               <div className="absolute top-3 right-3 z-10">
-                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                  quotation['Tipo de item'] === 'Producto' 
+                    ? 'bg-blue-100 text-blue-800' 
+                    : 'bg-green-100 text-green-800'
+                }`}>
                   <Package className="w-3 h-3 mr-1" />
-                  COTIZACIÓN
+                  {quotation['Tipo de item'] === 'Producto' ? 'COMPONENTE' : 'SERVICIO'}
                 </span>
               </div>
               
