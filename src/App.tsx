@@ -16,6 +16,35 @@ import { useAuth } from './hooks/useAuth';
 import { isSupabaseConfigured } from './lib/supabase';
 import { Quotation, QuotationFilters as Filters, SortOptions } from './types/quotation';
 
+// OAuth Redirect Handler Component
+const OAuthRedirectHandler: React.FC = () => {
+  useEffect(() => {
+    // Check if we're on localhost with OAuth tokens
+    if (window.location.hostname === 'localhost' && window.location.hash.includes('access_token')) {
+      // Extract the hash and redirect to production URL
+      const hash = window.location.hash;
+      const productionUrl = 'https://frolicking-fox-f0ca05.netlify.app';
+      window.location.href = `${productionUrl}/${hash}`;
+    }
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <div className="text-center">
+        <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+          <RefreshCw className="w-8 h-8 text-white animate-spin" />
+        </div>
+        <h3 className="text-xl font-semibold text-white mb-2">
+          Redirigiendo...
+        </h3>
+        <p className="text-gray-300">
+          Completando autenticación con Google
+        </p>
+      </div>
+    </div>
+  );
+};
+
 // Dashboard component (main quotation analyzer)
 const Dashboard: React.FC<{ darkMode: boolean; toggleDarkMode: () => void }> = ({ 
   darkMode, 
@@ -503,6 +532,17 @@ function App() {
   
   // Initialize filters with default "Componente" selection
   const [defaultFilters] = useState<Filters>({ tipoCotizacion: 'Componente' });
+
+  // Handle OAuth redirect from localhost
+  useEffect(() => {
+    if (window.location.hostname === 'localhost' && window.location.hash.includes('access_token')) {
+      // We're on localhost with OAuth tokens, redirect to production
+      const hash = window.location.hash;
+      const productionUrl = 'https://frolicking-fox-f0ca05.netlify.app';
+      window.location.href = `${productionUrl}/${hash}`;
+      return;
+    }
+  }, []);
 
   // Toggle dark mode
   const toggleDarkMode = () => {

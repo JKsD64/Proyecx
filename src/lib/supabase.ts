@@ -50,10 +50,16 @@ export const signInWithGoogle = async () => {
     throw new Error('Supabase no está configurado. Por favor configura las variables de entorno.');
   }
   
+  // Determine the correct redirect URL
+  const isProduction = window.location.hostname !== 'localhost';
+  const redirectUrl = isProduction 
+    ? `${window.location.origin}/`
+    : 'https://frolicking-fox-f0ca05.netlify.app/';
+  
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${window.location.origin}/`,
+      redirectTo: redirectUrl,
     },
   });
   return { data, error };

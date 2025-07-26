@@ -16,3 +16,8 @@
   from = "/*"
   to = "/index.html"
   status = 200
+# Handle OAuth redirects from localhost
+[[redirects]]
+  from = "/#access_token=*"
+  to = "/index.html"
+  status = 200
