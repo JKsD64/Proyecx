@@ -16,11 +16,14 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [darkMode, setDarkMode] = useState(false);
+  const [isEmbedded, setIsEmbedded] = useState(false);
 
   const quotationService = new QuotationService();
 
   useEffect(() => {
     loadData();
+    // Detectar si está en iframe
+    setIsEmbedded(window.self !== window.top);
   }, []);
 
   const loadData = async () => {
@@ -305,17 +308,17 @@ function App() {
   }
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${
+    <div className={`${isEmbedded ? 'min-h-full' : 'min-h-screen'} transition-colors duration-300 ${
       darkMode 
         ? 'bg-gray-900' 
         : 'bg-gradient-to-br from-blue-50 via-white to-purple-50'
     }`}>
       {/* Header */}
-      <header className={`${
+      <header className={`${isEmbedded ? 'relative' : 'sticky top-0'} ${
         darkMode 
           ? 'bg-gray-800/95 border-gray-700' 
           : 'bg-white/95 border-gray-200'
-      } backdrop-blur-sm shadow-lg border-b sticky top-0 z-40`}>
+      } backdrop-blur-sm shadow-lg border-b z-40`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
@@ -502,7 +505,7 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className={`${
+      {!isEmbedded && <footer className={`${
         darkMode 
           ? 'bg-gray-800/95 border-gray-700' 
           : 'bg-white/95 border-gray-200'
@@ -518,7 +521,7 @@ function App() {
             </p>
           </div>
         </div>
-      </footer>
+      </footer>}
     </div>
   );
 }

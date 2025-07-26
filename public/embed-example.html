@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo de Embedding - Analizador de Cotizaciones</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .embed-container {
+            position: relative;
+            width: 100%;
+            height: 800px;
+            border: none;
+        }
+        .embed-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 0 0 12px 12px;
+        }
+        .instructions {
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .size-options {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        .size-btn {
+            padding: 8px 16px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .size-btn:hover, .size-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        .responsive-note {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 Analizador de Cotizaciones - Embedded</h1>
+            <p>Ejemplo de cómo integrar el analizador en tu sitio web</p>
+        </div>
+        
+        <div class="embed-container">
+            <iframe 
+                id="cotizaciones-frame"
+                class="embed-frame"
+                src="https://frolicking-fox-f0ca05.netlify.app"
+                title="Analizador de Cotizaciones"
+                loading="lazy">
+            </iframe>
+        </div>
+        
+        <div class="instructions">
+            <h2>📋 Cómo integrar en tu sitio web</h2>
+            
+            <h3>🎯 Código básico para iframe:</h3>
+            <div class="code-block">
+&lt;iframe 
+    src="https://frolicking-fox-f0ca05.netlify.app"
+    width="100%" 
+    height="800"
+    frameborder="0"
+    title="Analizador de Cotizaciones"&gt;
+&lt;/iframe&gt;
+            </div>
+            
+            <h3>📐 Tamaños predefinidos:</h3>
+            <div class="size-options">
+                <button class="size-btn active" onclick="changeSize('100%', '800')">Completo (800px)</button>
+                <button class="size-btn" onclick="changeSize('100%', '600')">Compacto (600px)</button>
+                <button class="size-btn" onclick="changeSize('100%', '1000')">Extendido (1000px)</button>
+                <button class="size-btn" onclick="changeSize('800', '600')">Fijo 800x600</button>
+                <button class="size-btn" onclick="changeSize('1200', '800')">Fijo 1200x800</button>
+            </div>
+            
+            <div class="responsive-note">
+                <h4>💡 Recomendaciones:</h4>
+                <ul>
+                    <li><strong>Altura mínima:</strong> 600px para funcionalidad completa</li>
+                    <li><strong>Ancho:</strong> 100% para diseño responsivo</li>
+                    <li><strong>Carga:</strong> Usa <code>loading="lazy"</code> para mejor rendimiento</li>
+                    <li><strong>Accesibilidad:</strong> Incluye siempre el atributo <code>title</code></li>
+                </ul>
+            </div>
+            
+            <h3>🎨 Código responsivo avanzado:</h3>
+            <div class="code-block">
+&lt;div style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%;"&gt;
+    &lt;iframe 
+        src="https://frolicking-fox-f0ca05.netlify.app"
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+        frameborder="0"
+        title="Analizador de Cotizaciones"
+        loading="lazy"&gt;
+    &lt;/iframe&gt;
+&lt;/div&gt;
+            </div>
+            
+            <h3>⚙️ Integración con JavaScript:</h3>
+            <div class="code-block">
+// Crear iframe dinámicamente
+const iframe = document.createElement('iframe');
+iframe.src = 'https://frolicking-fox-f0ca05.netlify.app';
+iframe.width = '100%';
+iframe.height = '800';
+iframe.frameBorder = '0';
+iframe.title = 'Analizador de Cotizaciones';
+iframe.loading = 'lazy';
+
+// Agregar al contenedor
+document.getElementById('cotizaciones-container').appendChild(iframe);
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function changeSize(width, height) {
+            const frame = document.getElementById('cotizaciones-frame');
+            const container = document.querySelector('.embed-container');
+            
+            // Actualizar iframe
+            frame.style.width = width + (width.includes('%') ? '' : 'px');
+            frame.style.height = height + 'px';
+            
+            // Actualizar contenedor
+            container.style.height = height + 'px';
+            
+            // Actualizar botones activos
+            document.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Mostrar código actualizado
+            updateCodeExample(width, height);
+        }
+        
+        function updateCodeExample(width, height) {
+            const codeBlock = document.querySelector('.code-block');
+            const widthAttr = width.includes('%') ? width : width + 'px';
+            const heightAttr = height + 'px';
+            
+            codeBlock.innerHTML = `&lt;iframe 
+    src="https://frolicking-fox-f0ca05.netlify.app"
+    width="${widthAttr}" 
+    height="${heightAttr}"
+    frameborder="0"
+    title="Analizador de Cotizaciones"&gt;
+&lt;/iframe&gt;`;
+        }
+    </script>
+</body>
+</html>
