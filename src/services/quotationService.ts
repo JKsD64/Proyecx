@@ -182,7 +182,8 @@ export class QuotationService {
       if (filters.proveedor && row['Nombre del Proveedor'] !== filters.proveedor) return false;
       if (filters.marca && row['Marca del Componente'] !== filters.marca) return false;
       if (filters.tipo && row['Tipo de Componente'] !== filters.tipo) return false;
-      if (filters.material && row['Material'] !== filters.material) return false;
+      if (filters.modelo && row['Modelo del Componente'] !== filters.modelo) return false;
+      if (filters.diametro && row['Diámetro'] !== filters.diametro) return false;
       
       if (filters.year) {
         const dateStr = row['Fecha y hora'];
@@ -192,19 +193,6 @@ export class QuotationService {
           if (year !== filters.year) return false;
         } else {
           return false;
-        }
-      }
-
-      if (filters.priceRange) {
-        const price = parseFloat(row['Precio Unitario Neto en CLP']) || 0;
-        const parts = filters.priceRange.split('-');
-        const min = parseFloat(parts[0]);
-        const max = parts[1] ? parseFloat(parts[1].replace('+', '')) : Infinity;
-        
-        if (filters.priceRange.includes('+')) {
-          if (price < min) return false;
-        } else {
-          if (price < min || price > max) return false;
         }
       }
 

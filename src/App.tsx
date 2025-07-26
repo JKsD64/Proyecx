@@ -69,8 +69,12 @@ function App() {
     return quotationService.getUniqueValues(data, 'Tipo de Componente');
   }, [data]);
 
-  const uniqueMaterials = useMemo(() => {
-    return quotationService.getUniqueValues(data, 'Material');
+  const uniqueModels = useMemo(() => {
+    return quotationService.getUniqueValues(data, 'Modelo del Componente');
+  }, [data]);
+
+  const uniqueDiameters = useMemo(() => {
+    return quotationService.getUniqueValues(data, 'Diámetro');
   }, [data]);
 
   const handleExport = () => {
@@ -152,7 +156,8 @@ function App() {
             uniqueProviders={uniqueProviders}
             uniqueBrands={uniqueBrands}
             uniqueTypes={uniqueTypes}
-            uniqueMaterials={uniqueMaterials}
+            uniqueModels={uniqueModels}
+            uniqueDiameters={uniqueDiameters}
           />
 
           {/* View Toggle */}

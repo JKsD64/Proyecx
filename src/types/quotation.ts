@@ -20,9 +20,9 @@ export interface QuotationFilters {
   proveedor?: string;
   marca?: string;
   tipo?: string;
-  material?: string;
+  modelo?: string;
+  diametro?: string;
   year?: string;
-  priceRange?: string;
 }
 
 export interface QuotationStatistics {
