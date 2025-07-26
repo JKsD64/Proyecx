@@ -79,10 +79,6 @@ function App() {
     return quotationService.getUniqueValues(data, 'Diámetro');
   }, [data]);
 
-  const uniqueQuotationTypes = useMemo(() => {
-    return quotationService.getUniqueValues(filteredDataForFilters, 'Tipo de item');
-  }, [data]);
-
   // Datos filtrados para calcular opciones de filtros dinámicos
   const filteredDataForFilters = useMemo(() => {
     // Aplicar todos los filtros excepto el que estamos calculando
@@ -97,6 +93,10 @@ function App() {
     
     return baseData;
   }, [data, filters.search]);
+
+  const uniqueQuotationTypes = useMemo(() => {
+    return quotationService.getUniqueValues(filteredDataForFilters, 'Tipo de item');
+  }, [filteredDataForFilters]);
 
   // Filtros dinámicos basados en la selección actual
   const dynamicUniqueProviders = useMemo(() => {
