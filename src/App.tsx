@@ -80,8 +80,162 @@ function App() {
   }, [data]);
 
   const uniqueQuotationTypes = useMemo(() => {
-    return quotationService.getUniqueValues(data, 'Tipo de item');
+    return quotationService.getUniqueValues(filteredDataForFilters, 'Tipo de item');
   }, [data]);
+
+  // Datos filtrados para calcular opciones de filtros dinámicos
+  const filteredDataForFilters = useMemo(() => {
+    // Aplicar todos los filtros excepto el que estamos calculando
+    let baseData = data;
+    
+    if (filters.search) {
+      baseData = baseData.filter(row => {
+        const searchableText = Object.values(row).join(' ').toLowerCase();
+        return searchableText.includes(filters.search!.toLowerCase());
+      });
+    }
+    
+    return baseData;
+  }, [data, filters.search]);
+
+  // Filtros dinámicos basados en la selección actual
+  const dynamicUniqueProviders = useMemo(() => {
+    let baseData = filteredDataForFilters;
+    
+    if (filters.marca) baseData = baseData.filter(row => row['Marca del Componente'] === filters.marca);
+    if (filters.tipo) baseData = baseData.filter(row => row['Tipo de Componente'] === filters.tipo);
+    if (filters.modelo) baseData = baseData.filter(row => row['Modelo del Componente'] === filters.modelo);
+    if (filters.diametro) baseData = baseData.filter(row => row['Diámetro'] === filters.diametro);
+    if (filters.tipoCotizacion) baseData = baseData.filter(row => row['Tipo de item'] === filters.tipoCotizacion);
+    if (filters.year) {
+      baseData = baseData.filter(row => {
+        const dateStr = row['Fecha y hora'];
+        if (dateStr) {
+          const parts = dateStr.split('-');
+          const year = parts[2] ? parts[2].split(' ')[0] : '';
+          return year === filters.year;
+        }
+        return false;
+      });
+    }
+    
+    return quotationService.getUniqueValues(baseData, 'Nombre del Proveedor');
+  }, [filteredDataForFilters, filters.marca, filters.tipo, filters.modelo, filters.diametro, filters.tipoCotizacion, filters.year]);
+
+  const dynamicUniqueBrands = useMemo(() => {
+    let baseData = filteredDataForFilters;
+    
+    if (filters.proveedor) baseData = baseData.filter(row => row['Nombre del Proveedor'] === filters.proveedor);
+    if (filters.tipo) baseData = baseData.filter(row => row['Tipo de Componente'] === filters.tipo);
+    if (filters.modelo) baseData = baseData.filter(row => row['Modelo del Componente'] === filters.modelo);
+    if (filters.diametro) baseData = baseData.filter(row => row['Diámetro'] === filters.diametro);
+    if (filters.tipoCotizacion) baseData = baseData.filter(row => row['Tipo de item'] === filters.tipoCotizacion);
+    if (filters.year) {
+      baseData = baseData.filter(row => {
+        const dateStr = row['Fecha y hora'];
+        if (dateStr) {
+          const parts = dateStr.split('-');
+          const year = parts[2] ? parts[2].split(' ')[0] : '';
+          return year === filters.year;
+        }
+        return false;
+      });
+    }
+    
+    return quotationService.getUniqueValues(baseData, 'Marca del Componente');
+  }, [filteredDataForFilters, filters.proveedor, filters.tipo, filters.modelo, filters.diametro, filters.tipoCotizacion, filters.year]);
+
+  const dynamicUniqueTypes = useMemo(() => {
+    let baseData = filteredDataForFilters;
+    
+    if (filters.proveedor) baseData = baseData.filter(row => row['Nombre del Proveedor'] === filters.proveedor);
+    if (filters.marca) baseData = baseData.filter(row => row['Marca del Componente'] === filters.marca);
+    if (filters.modelo) baseData = baseData.filter(row => row['Modelo del Componente'] === filters.modelo);
+    if (filters.diametro) baseData = baseData.filter(row => row['Diámetro'] === filters.diametro);
+    if (filters.tipoCotizacion) baseData = baseData.filter(row => row['Tipo de item'] === filters.tipoCotizacion);
+    if (filters.year) {
+      baseData = baseData.filter(row => {
+        const dateStr = row['Fecha y hora'];
+        if (dateStr) {
+          const parts = dateStr.split('-');
+          const year = parts[2] ? parts[2].split(' ')[0] : '';
+          return year === filters.year;
+        }
+        return false;
+      });
+    }
+    
+    return quotationService.getUniqueValues(baseData, 'Tipo de Componente');
+  }, [filteredDataForFilters, filters.proveedor, filters.marca, filters.modelo, filters.diametro, filters.tipoCotizacion, filters.year]);
+
+  const dynamicUniqueModels = useMemo(() => {
+    let baseData = filteredDataForFilters;
+    
+    if (filters.proveedor) baseData = baseData.filter(row => row['Nombre del Proveedor'] === filters.proveedor);
+    if (filters.marca) baseData = baseData.filter(row => row['Marca del Componente'] === filters.marca);
+    if (filters.tipo) baseData = baseData.filter(row => row['Tipo de Componente'] === filters.tipo);
+    if (filters.diametro) baseData = baseData.filter(row => row['Diámetro'] === filters.diametro);
+    if (filters.tipoCotizacion) baseData = baseData.filter(row => row['Tipo de item'] === filters.tipoCotizacion);
+    if (filters.year) {
+      baseData = baseData.filter(row => {
+        const dateStr = row['Fecha y hora'];
+        if (dateStr) {
+          const parts = dateStr.split('-');
+          const year = parts[2] ? parts[2].split(' ')[0] : '';
+          return year === filters.year;
+        }
+        return false;
+      });
+    }
+    
+    return quotationService.getUniqueValues(baseData, 'Modelo del Componente');
+  }, [filteredDataForFilters, filters.proveedor, filters.marca, filters.tipo, filters.diametro, filters.tipoCotizacion, filters.year]);
+
+  const dynamicUniqueDiameters = useMemo(() => {
+    let baseData = filteredDataForFilters;
+    
+    if (filters.proveedor) baseData = baseData.filter(row => row['Nombre del Proveedor'] === filters.proveedor);
+    if (filters.marca) baseData = baseData.filter(row => row['Marca del Componente'] === filters.marca);
+    if (filters.tipo) baseData = baseData.filter(row => row['Tipo de Componente'] === filters.tipo);
+    if (filters.modelo) baseData = baseData.filter(row => row['Modelo del Componente'] === filters.modelo);
+    if (filters.tipoCotizacion) baseData = baseData.filter(row => row['Tipo de item'] === filters.tipoCotizacion);
+    if (filters.year) {
+      baseData = baseData.filter(row => {
+        const dateStr = row['Fecha y hora'];
+        if (dateStr) {
+          const parts = dateStr.split('-');
+          const year = parts[2] ? parts[2].split(' ')[0] : '';
+          return year === filters.year;
+        }
+        return false;
+      });
+    }
+    
+    return quotationService.getUniqueValues(baseData, 'Diámetro');
+  }, [filteredDataForFilters, filters.proveedor, filters.marca, filters.tipo, filters.modelo, filters.tipoCotizacion, filters.year]);
+
+  const dynamicUniqueQuotationTypes = useMemo(() => {
+    let baseData = filteredDataForFilters;
+    
+    if (filters.proveedor) baseData = baseData.filter(row => row['Nombre del Proveedor'] === filters.proveedor);
+    if (filters.marca) baseData = baseData.filter(row => row['Marca del Componente'] === filters.marca);
+    if (filters.tipo) baseData = baseData.filter(row => row['Tipo de Componente'] === filters.tipo);
+    if (filters.modelo) baseData = baseData.filter(row => row['Modelo del Componente'] === filters.modelo);
+    if (filters.diametro) baseData = baseData.filter(row => row['Diámetro'] === filters.diametro);
+    if (filters.year) {
+      baseData = baseData.filter(row => {
+        const dateStr = row['Fecha y hora'];
+        if (dateStr) {
+          const parts = dateStr.split('-');
+          const year = parts[2] ? parts[2].split(' ')[0] : '';
+          return year === filters.year;
+        }
+        return false;
+      });
+    }
+    
+    return quotationService.getUniqueValues(baseData, 'Tipo de item');
+  }, [filteredDataForFilters, filters.proveedor, filters.marca, filters.tipo, filters.modelo, filters.diametro, filters.year]);
 
   if (loading) {
     return (
@@ -157,12 +311,12 @@ function App() {
             sortOptions={sortOptions}
             onSortChange={setSortOptions}
             data={data}
-            uniqueProviders={uniqueProviders}
-            uniqueBrands={uniqueBrands}
-            uniqueTypes={uniqueTypes}
-            uniqueModels={uniqueModels}
-            uniqueDiameters={uniqueDiameters}
-            uniqueQuotationTypes={uniqueQuotationTypes}
+            uniqueProviders={dynamicUniqueProviders}
+            uniqueBrands={dynamicUniqueBrands}
+            uniqueTypes={dynamicUniqueTypes}
+            uniqueModels={dynamicUniqueModels}
+            uniqueDiameters={dynamicUniqueDiameters}
+            uniqueQuotationTypes={dynamicUniqueQuotationTypes}
           />
 
           {/* View Toggle */}
