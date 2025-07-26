@@ -1,18 +1,12 @@
 import { Quotation, QuotationFilters, QuotationStatistics, TopProvider, PriceRanges, SortOptions } from '../types/quotation';
 
 export class QuotationService {
-  private googleSheetsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTnf4Sm6V9ZWNHbHKDtC10sXRmxtdvO66SMFeIGIGE7SYeUgqbqeod010MNeGV0p3KIVcPOVmhBwpFI/pub?output=csv';
+  private googleSheetsUrl = '/api/google-sheets';
 
   async loadData(): Promise<Quotation[]> {
     try {
       console.log('Cargando datos desde Google Sheets...');
-      const response = await fetch(this.googleSheetsUrl, {
-        mode: 'no-cors',
-        headers: {
-          'Accept': 'text/csv,text/plain,*/*',
-          'Access-Control-Allow-Origin': '*'
-        }
-      });
+      const response = await fetch(this.googleSheetsUrl);
       if (!response.ok) {
         throw new Error(`No se pudo cargar el archivo CSV: ${response.status} ${response.statusText}`);
       }

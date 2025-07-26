@@ -7,6 +7,15 @@ export default defineConfig({
   server: {
     proxy: {
       '/api/google-sheets': {
+        target: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTnf4Sm6V9ZWNHbHKDtC10sXRmxtdvO66SMFeIGIGE7SYeUgqbqeod010MNeGV0p3KIVcPOVmhBwpFI/pub?output=csv',
+        changeOrigin: true,
+        rewrite: (path) => ''
+      }
+    }
+  }
+  server: {
+    proxy: {
+      '/api/google-sheets': {
         target: 'https://docs.google.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/google-sheets/, ''),
