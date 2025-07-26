@@ -22,7 +22,7 @@ const Dashboard: React.FC<{ darkMode: boolean; toggleDarkMode: () => void }> = (
   toggleDarkMode 
 }) => {
   const [data, setData] = useState<Quotation[]>([]);
-  const [filters, setFilters] = useState<Filters>({});
+  const [filters, setFilters] = useState<Filters>({ tipoCotizacion: 'Componente' });
   const [sortOptions, setSortOptions] = useState<SortOptions>({ field: 'price', order: 'desc' });
   const [viewMode, setViewMode] = useState<'table' | 'cards'>('cards');
   const [loading, setLoading] = useState(true);
@@ -500,6 +500,9 @@ const PlaceholderPage: React.FC<{ title: string; darkMode: boolean }> = ({ title
 function App() {
   const { user, loading } = useAuth();
   const [darkMode, setDarkMode] = useState(false);
+  
+  // Initialize filters with default "Componente" selection
+  const [defaultFilters] = useState<Filters>({ tipoCotizacion: 'Componente' });
 
   // Toggle dark mode
   const toggleDarkMode = () => {

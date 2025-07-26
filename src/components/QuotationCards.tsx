@@ -210,7 +210,11 @@ export const QuotationCards: React.FC<QuotationCardsProps> = ({ darkMode, data }
               {/* Action Button */}
               <button 
                 onClick={() => handleViewDetails(quotation)}
-               className="w-full mt-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-4 rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+               className={`w-full mt-4 py-2 px-4 rounded-xl transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 ${
+                 darkMode 
+                   ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700' 
+                   : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700'
+               }`}
               >
                 Ver Detalles
               </button>
