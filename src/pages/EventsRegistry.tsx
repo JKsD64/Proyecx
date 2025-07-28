@@ -173,20 +173,24 @@ export const EventsRegistry: React.FC<EventsRegistryProps> = ({ darkMode }) => {
       />
 
       {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
         {/* Event List */}
-        <EventList
-          darkMode={darkMode}
-          events={filteredData}
-          selectedEvent={selectedEvent}
-          onEventSelect={setSelectedEvent}
-        />
+        <div className="xl:col-span-1">
+          <EventList
+            darkMode={darkMode}
+            events={filteredData}
+            selectedEvent={selectedEvent}
+            onEventSelect={setSelectedEvent}
+          />
+        </div>
 
         {/* Event Detail */}
-        <EventDetail
-          darkMode={darkMode}
-          event={selectedEvent}
-        />
+        <div className="xl:col-span-2">
+          <EventDetail
+            darkMode={darkMode}
+            event={selectedEvent}
+          />
+        </div>
       </div>
 
       {/* Visual Comparison */}

@@ -138,6 +138,7 @@ export const EventComparison: React.FC<EventComparisonProps> = ({ darkMode, even
                 controls
                 className="w-full h-full object-contain"
                 onError={() => onError(selectedIndex)}
+                preload="metadata"
               >
                 Tu navegador no soporta el elemento de video.
               </video>
@@ -147,6 +148,8 @@ export const EventComparison: React.FC<EventComparisonProps> = ({ darkMode, even
                 alt={currentMedia.title}
                 className="w-full h-full object-contain"
                 onError={() => onError(selectedIndex)}
+                loading="lazy"
+                crossOrigin="anonymous"
               />
             )
           ) : (

@@ -90,22 +90,22 @@ export const EventList: React.FC<EventListProps> = ({
       <div className={`px-6 py-4 border-b flex justify-between items-center ${
         darkMode ? 'border-gray-700' : 'border-gray-200'
       }`}>
-        <h2 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+        <h2 className={`text-base font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
           Eventos de Mantenimiento ({events.length} resultados)
         </h2>
       </div>
 
-      <div className="max-h-[600px] overflow-y-auto">
+      <div className="max-h-[500px] overflow-y-auto">
         <div className="divide-y divide-gray-200 dark:divide-gray-700">
           {events.map((event, index) => (
             <div
               key={index}
               onClick={() => onEventSelect(event)}
-              className={`p-6 cursor-pointer transition-all duration-200 hover:shadow-lg ${
+              className={`p-4 cursor-pointer transition-all duration-200 hover:shadow-lg ${
                 selectedEvent === event
                   ? darkMode 
-                    ? 'bg-orange-900/30 border-l-4 border-orange-500' 
-                    : 'bg-orange-50 border-l-4 border-orange-500'
+                    ? 'bg-orange-900/50 border-l-4 border-orange-500 shadow-lg' 
+                    : 'bg-orange-50 border-l-4 border-orange-500 shadow-lg'
                   : darkMode 
                     ? 'hover:bg-gray-700/50' 
                     : 'hover:bg-gray-50'
@@ -114,34 +114,34 @@ export const EventList: React.FC<EventListProps> = ({
               <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
                   {/* Header con tipo y prioridad */}
-                  <div className="flex items-center space-x-3 mb-3">
+                  <div className="flex items-center space-x-2 mb-2">
                     <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${
                       getPriorityColor(event.Prioridad)
                     }`}>
-                      <AlertTriangle className="w-3 h-3 mr-1" />
+                      <AlertTriangle className="w-2 h-2 mr-1" />
                       {event.Prioridad}
                     </span>
                     <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${
                       getStatusColor(event.Estado)
                     }`}>
-                      <Clock className="w-3 h-3 mr-1" />
+                      <Clock className="w-2 h-2 mr-1" />
                       {event.Estado}
                     </span>
                   </div>
 
                   {/* Título del problema */}
-                  <h3 className={`text-sm font-semibold ${
+                  <h3 className={`text-xs font-semibold ${
                     darkMode ? 'text-white' : 'text-gray-900'
-                  } mb-2 line-clamp-2`}>
+                  } mb-1 line-clamp-2`}>
                     {event['Descripción del problema']}
                   </h3>
 
                   {/* Información básica */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                  <div className="grid grid-cols-1 gap-1 text-xs">
                     <div className={`flex items-center ${
                       darkMode ? 'text-gray-400' : 'text-gray-600'
                     }`}>
-                      <Calendar className="w-3 h-3 mr-1 flex-shrink-0" />
+                      <Calendar className="w-2 h-2 mr-1 flex-shrink-0" />
                       <span className="truncate">
                         {event.Fecha} {event.Hora}
                       </span>
@@ -150,22 +150,15 @@ export const EventList: React.FC<EventListProps> = ({
                     <div className={`flex items-center ${
                       darkMode ? 'text-gray-400' : 'text-gray-600'
                     }`}>
-                      <MapPin className="w-3 h-3 mr-1 flex-shrink-0" />
+                      <MapPin className="w-2 h-2 mr-1 flex-shrink-0" />
                       <span className="truncate">{event.Ubicación}</span>
                     </div>
                     
                     <div className={`flex items-center ${
                       darkMode ? 'text-gray-400' : 'text-gray-600'
                     }`}>
-                      <User className="w-3 h-3 mr-1 flex-shrink-0" />
+                      <User className="w-2 h-2 mr-1 flex-shrink-0" />
                       <span className="truncate">{event.Responsable}</span>
-                    </div>
-                    
-                    <div className={`flex items-center ${
-                      darkMode ? 'text-gray-400' : 'text-gray-600'
-                    }`}>
-                      <span className="w-3 h-3 mr-1 flex-shrink-0 text-center">📋</span>
-                      <span className="truncate">{event['Tipo de evento']}</span>
                     </div>
                   </div>
                 </div>
@@ -177,7 +170,7 @@ export const EventList: React.FC<EventListProps> = ({
                       ? 'text-gray-400 hover:text-white hover:bg-gray-700' 
                       : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
                   }`}>
-                    <Eye className="w-4 h-4" />
+                    <Eye className="w-3 h-3" />
                   </button>
                 </div>
               </div>

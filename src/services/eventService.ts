@@ -83,11 +83,11 @@ export class EventService {
         "Costo estimado": "150000",
         "Costo real": "135000",
         "Observaciones": "Trabajo completado sin incidentes. Se recomienda inspección mensual.",
-        "Registro evento 1": "https://drive.google.com/file/d/1ABC123/view?usp=drivesdk",
-        "Registro evento 2": "https://drive.google.com/file/d/1DEF456/view?usp=drivesdk",
+        "Registro evento 1": "https://images.pexels.com/photos/162553/keys-workshop-mechanic-tools-162553.jpeg",
+        "Registro evento 2": "https://images.pexels.com/photos/257736/pexels-photo-257736.jpeg",
         "Registro evento 3": "",
-        "Registro solución 1": "https://drive.google.com/file/d/1GHI789/view?usp=drivesdk",
-        "Registro solución 2": "https://drive.google.com/file/d/1JKL012/view?usp=drivesdk",
+        "Registro solución 1": "https://images.pexels.com/photos/1108101/pexels-photo-1108101.jpeg",
+        "Registro solución 2": "https://images.pexels.com/photos/159298/gears-cogs-machine-machinery-159298.jpeg",
         "Registro solución 3": ""
       },
       {
@@ -106,7 +106,7 @@ export class EventService {
         "Costo estimado": "300000",
         "Costo real": "0",
         "Observaciones": "Área acordonada por seguridad. Trabajo programado para mañana.",
-        "Registro evento 1": "https://drive.google.com/file/d/1MNO345/view?usp=drivesdk",
+        "Registro evento 1": "https://images.pexels.com/photos/1108572/pexels-photo-1108572.jpeg",
         "Registro evento 2": "",
         "Registro evento 3": "",
         "Registro solución 1": "",
@@ -129,9 +129,9 @@ export class EventService {
         "Costo estimado": "80000",
         "Costo real": "0",
         "Observaciones": "Programado para el próximo lunes",
-        "Registro evento 1": "https://drive.google.com/file/d/1PQR678/view?usp=drivesdk",
-        "Registro evento 2": "https://drive.google.com/file/d/1STU901/view?usp=drivesdk",
-        "Registro evento 3": "https://drive.google.com/file/d/1VWX234/view?usp=drivesdk",
+        "Registro evento 1": "https://images.pexels.com/photos/416978/pexels-photo-416978.jpeg",
+        "Registro evento 2": "https://images.pexels.com/photos/209251/pexels-photo-209251.jpeg",
+        "Registro evento 3": "https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg",
         "Registro solución 1": "",
         "Registro solución 2": "",
         "Registro solución 3": ""
@@ -143,9 +143,29 @@ export class EventService {
   convertGoogleDriveUrl(url: string): string {
     if (!url || !url.includes('drive.google.com')) return url;
     
-    const fileIdMatch = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+    // Extraer el ID del archivo de diferentes formatos de URL de Google Drive
+    let fileId = null;
+    
+    // Formato: /file/d/ID/view
+    const fileIdMatch1 = url.match(/\/file\/d\/([a-zA-Z0-9-_]+)/);
+    if (fileIdMatch1) {
+      fileId = fileIdMatch1[1];
+    }
+    
+    // Formato: /d/ID/view (formato alternativo)
+    const fileIdMatch2 = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+    if (!fileId && fileIdMatch2) {
+      fileId = fileIdMatch2[1];
+    }
+    
+    // Formato: id=ID (en parámetros de URL)
+    const fileIdMatch3 = url.match(/[?&]id=([a-zA-Z0-9-_]+)/);
+    if (!fileId && fileIdMatch3) {
+      fileId = fileIdMatch3[1];
+    }
+    
     if (fileIdMatch) {
-      const fileId = fileIdMatch[1];
+      // Usar el endpoint de visualización directa de Google Drive
       return `https://drive.google.com/uc?export=view&id=${fileId}`;
     }
     
