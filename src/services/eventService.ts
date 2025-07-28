@@ -164,7 +164,7 @@ export class EventService {
       fileId = fileIdMatch3[1];
     }
     
-    if (fileIdMatch) {
+    if (fileId) {
       // Usar el endpoint de visualización directa de Google Drive
       return `https://drive.google.com/uc?export=view&id=${fileId}`;
     }
