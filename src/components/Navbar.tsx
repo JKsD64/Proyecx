@@ -168,6 +168,7 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode, user }
           <nav className="hidden lg:flex items-center space-x-8">
             <NavLink to="/">Inicio</NavLink>
             <NavLink to="/planillas">Planillas de Registro</NavLink>
+            <NavLink to="/registro-eventos">Registro de Eventos</NavLink>
             
             <DropdownMenu
               title="Bases de Datos"
@@ -301,6 +302,22 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode, user }
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Planillas de Registro
+              </Link>
+              
+              <Link
+                to="/registro-eventos"
+                className={`block px-3 py-2 rounded-md text-base font-medium ${
+                  isActivePath('/registro-eventos')
+                    ? darkMode 
+                      ? 'bg-orange-900/50 text-orange-300' 
+                      : 'bg-orange-50 text-orange-700'
+                    : darkMode 
+                      ? 'text-gray-300 hover:bg-gray-800 hover:text-white' 
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Registro de Eventos
               </Link>
               
               {/* Mobile Bases de Datos */}

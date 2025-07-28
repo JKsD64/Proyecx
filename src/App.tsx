@@ -8,6 +8,7 @@ import { QuotationCards } from './components/QuotationCards';
 import { ViewToggle } from './components/ViewToggle';
 import { QuotationStats } from './components/QuotationStats';
 import { Navbar } from './components/Navbar';
+import { EventsRegistry } from './pages/EventsRegistry';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { ForgotPassword } from './pages/ForgotPassword';
@@ -612,6 +613,10 @@ function App() {
                 <Route 
                   path="/bases-de-datos/productos" 
                   element={<PlaceholderPage title="Base de Datos - Productos" darkMode={darkMode} />} 
+                />
+                <Route 
+                  path="/registro-eventos" 
+                  element={<EventsRegistry darkMode={darkMode} />} 
                 />
                 <Route 
                   path="/dashboards/general" 
